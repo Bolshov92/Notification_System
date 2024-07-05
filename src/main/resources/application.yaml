@@ -1,0 +1,14 @@
+spring:
+  main:
+   banner-mode: off
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/emergency_contacts
+    username: root
+    password: Bolshov92
+    driver-class-name: com.mysql.cj.jdbc.Driver
