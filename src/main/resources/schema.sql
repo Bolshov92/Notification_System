@@ -1,0 +1,14 @@
+CREATE TABLE users
+(
+    id    BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name  VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    UNIQUE (email)
+);
+
+CREATE TABLE files
+(
+    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    data     LONGBLOB     NOT NULL
+);
