@@ -5,7 +5,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
 
   datasource:
     url: jdbc:mysql://localhost:3306/emergency_contacts
@@ -13,7 +13,14 @@ spring:
     password: Bolshov92
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+logging:
+ level:
+  root: INFO
+  com.example.construction_company_management: DEBUG
+
 twilio:
   account-sid: USb480f423a4bd83b39ed85262157c6f7e
   auth-token: 5f97019159495a3a54f279aad8b6c73b
-  phone-number: +447463541808
+  phone-number: +447893941511
+

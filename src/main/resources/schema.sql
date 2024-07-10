@@ -1,14 +1,17 @@
 CREATE TABLE users
 (
     id    BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name  VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
+    name  VARCHAR(255) ,
+    email VARCHAR(255) ,
     UNIQUE (email)
 );
 
 CREATE TABLE files
 (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    filename VARCHAR(255) NOT NULL,
-    data     LONGBLOB     NOT NULL
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    file_name   VARCHAR(255) ,
+    file_type   VARCHAR(255) ,
+    file_path   VARCHAR(255) ,
+    upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data        LONGBLOB
 );

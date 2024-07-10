@@ -4,6 +4,8 @@ import com.emergency.entity.Contact;
 import com.emergency.service.ContactService;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +17,7 @@ import java.util.List;
 
 @Service
 public class ContactServiceImpl implements ContactService {
+    private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
 
     @Override
     public List<Contact> readContactsFromFile(MultipartFile file) throws IOException {
@@ -24,18 +27,26 @@ public class ContactServiceImpl implements ContactService {
              CSVReader csvReader = new CSVReader(reader)) {
 
             String[] line;
-            while ((line = csvReader.readNext()) != null) {
+            int lineNumber = 0;
+            while ((line = csvReader.readNext()) != null){
+                lineNumber++;
                 if (line.length >= 2) {
-                    Contact contact = new Contact(line[0], line[1]);
+                    String name = line[0];
+                    String phoneNumber = line[1];
+                    Contact contact = new Contact(name, phoneNumber);
                     contacts.add(contact);
+                    logger.info("Read contact: {}", contact);
                 } else {
-                    throw new IOException("Invalid CSV format: Each line must have at least 2 fields");
+                    logger.warn("Skipping line {} as it does not have enough elements", lineNumber);
                 }
             }
+        } catch (IOException e) {
+            throw new IOException("Failed to read contacts from file", e);
         } catch (CsvValidationException e) {
-            throw new IOException("Error validating CSV file", e);
+            throw new RuntimeException(e);
         }
 
         return contacts;
     }
+
 }
