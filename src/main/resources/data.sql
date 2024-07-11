@@ -1,3 +1,4 @@
+
 INSERT INTO files (file_name, file_type, data)
 VALUES ('contacts.txt', 'text/plain', UNHEX('536C6176612C2B343437353132333736383036'));
 

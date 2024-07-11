@@ -5,13 +5,17 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
   datasource:
     url: jdbc:mysql://localhost:3306/emergency_contacts
     username: root
     password: Bolshov92
     driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
 
 
 logging:
