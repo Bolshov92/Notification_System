@@ -19,10 +19,12 @@ public class SmsServiceImpl implements SmsService {
 
     @Value("${twilio.phone-number}")
     private String fromPhoneNumber;
+
     @PostConstruct
-    private void init(){
+    private void init() {
         Twilio.init(accountSid, authToken);
     }
+
     @Override
     public void sendSms(String to, String text) {
         Message message = Message.creator(

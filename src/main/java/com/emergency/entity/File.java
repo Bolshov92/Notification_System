@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,7 +23,15 @@ public class File {
     @Column(name = "file_type")
     private String type;
 
+    @Column(name = "file_path")
+    private String filePath;
+
+    @Column(name = "upload_time")
+    private Timestamp uploadTime;
+
     @Lob
+    @Column(name = "data")
     private byte[] data;
+
 
 }

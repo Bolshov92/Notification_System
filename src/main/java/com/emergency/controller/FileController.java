@@ -2,7 +2,11 @@ package com.emergency.controller;
 
 import com.emergency.entity.File;
 import com.emergency.service.FileService;
+import com.emergency.service.impl.FileServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,31 +16,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
-
     @Autowired
     private FileService fileService;
 
-    @GetMapping
-    public List<File> getAllFiles() {
-        return fileService.getAllFiles();
-    }
-
-    @GetMapping("/{id}")
-    public File getFileById(@PathVariable Long id) {
-        return fileService.getFileById(id);
-    }
-
     @PostMapping("/upload")
-    public File uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.status(400).body("No file uploaded or file is empty.");
+        }
+
         try {
-            return fileService.saveFile(file);
+            fileService.saveFile(file);
+            return ResponseEntity.ok("File uploaded and processed successfully.");
         } catch (Exception e) {
-            throw new RuntimeException("Failed to upload and process the file", e);
+            return ResponseEntity.status(500).body("Error processing file: " + e.getMessage());
         }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteFile(@PathVariable Long id) {
-        fileService.deleteFile(id);
-    }
 }

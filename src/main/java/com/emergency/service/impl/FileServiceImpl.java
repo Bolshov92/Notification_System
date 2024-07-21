@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -20,17 +21,14 @@ public class FileServiceImpl implements FileService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
 
+    @Autowired
     private FileRepository fileRepository;
-    private ContactService contactService;
-    private SmsService smsService;
 
     @Autowired
-    public FileServiceImpl(FileRepository fileRepository, ContactService contactService, SmsService smsService) {
-        this.fileRepository = fileRepository;
-        this.contactService = contactService;
-        this.smsService = smsService;
-    }
+    private ContactService contactService;
 
+    @Autowired
+    private SmsService smsService;
 
     @Override
     public List<File> getAllFiles() {
@@ -44,30 +42,29 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File saveFile(MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            logger.error("Received an empty file.");
+            throw new IllegalArgumentException("File is empty.");
+        }
+
+
         File dbFile = new File();
         dbFile.setFileName(file.getOriginalFilename());
         dbFile.setType(file.getContentType());
         dbFile.setData(file.getBytes());
+        dbFile.setFilePath("/some/path");
+        dbFile.setUploadTime(new Timestamp(System.currentTimeMillis()));
 
-        logger.info("Saving file to database: {}", dbFile.getFileName());
-        fileRepository.save(dbFile);
-        logger.info("File saved successfully");
 
-        try {
-            List<Contact> contacts = contactService.readContactsFromFile(file);
-            logger.info("Read {} contacts from file", contacts.size());
+        File savedFile = fileRepository.save(dbFile);
 
-            for (Contact contact : contacts) {
-                String message = "Hi, " + contact.getName() + ". This is an emergency notification.";
-                logger.info("Sending SMS to {}: {}", contact.getPhoneNumber(), message);
-                smsService.sendSms(contact.getPhoneNumber(), message);
-            }
-        } catch (Exception e) {
-            logger.error("Error reading contacts from file or sending SMS", e);
-            throw new RuntimeException("Failed to upload and process the file", e);
+        List<Contact> contacts = contactService.readContactsFromFile(file);
+        for (Contact contact : contacts) {
+            String message = "Hi, " + contact.getName() + ". This is an emergency notification.";
+            smsService.sendSms(contact.getPhoneNumber(), message);
         }
 
-        return dbFile;
+        return savedFile;
     }
 
     @Override
