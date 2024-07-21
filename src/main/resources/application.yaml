@@ -27,6 +27,6 @@ logging:
 
 twilio:
   account-sid: ACf678f14131c801834d2458a67d447033
-  auth-token: 5f97019159495a3a54f279aad8b6c73b
+  auth-token: 27290f5350cf7b9a042a3abcbaf9800f
   phone-number: +447893941511
 

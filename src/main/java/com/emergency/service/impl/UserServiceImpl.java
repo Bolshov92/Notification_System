@@ -1,36 +1,63 @@
 package com.emergency.service.impl;
 
+import com.emergency.dto.UserAfterCreationDto;
+import com.emergency.dto.UserCreateDto;
 import com.emergency.entity.User;
+import com.emergency.entity.UserInfo;
+import com.emergency.mapper.UserMapper;
+import com.emergency.repository.RoleRepository;
+import com.emergency.repository.UserInfoRepository;
 import com.emergency.repository.UserRepository;
 import com.emergency.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final UserInfoRepository userInfoRepository;
+    private final RoleRepository roleRepository;
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
+    public UserAfterCreationDto createUser(UserCreateDto userCreateDto) {
+        Optional<User> existingUser = userRepository.findByUserInfoUserName(userCreateDto.getUserName());
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("User with the same username already exists.");
+        }
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserName(userCreateDto.getUserName());
+        userInfo.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
+        UserInfo savedUserInfo = userInfoRepository.save(userInfo);
+
+        User user = new User();
+        user.setUserInfo(savedUserInfo);
+        savedUserInfo.setUser(user);
+        user.setName(userCreateDto.getUserName());
+        user.setEmail(userCreateDto.getEmail());
+        user.setPhoneNumber(userCreateDto.getPhoneNumber());
+        user.setUserInfo(savedUserInfo);
+        User savedUser = userRepository.save(user);
+        UserAfterCreationDto userAfterCreationDto = userMapper.toDto(savedUser);
+        userAfterCreationDto.setUserId(String.valueOf(savedUser.getId()));
+
+        return userAfterCreationDto;
+
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+    public User getUserById(String id) {
+        User user = userRepository.findUserById(Long.parseLong(id));
+        if (user == null) {
+            throw new IllegalStateException("User not found");
+        }
+        return user;
     }
 }

@@ -1,31 +1,28 @@
 package com.emergency.controller;
 
+import com.emergency.dto.UserAfterCreationDto;
+import com.emergency.dto.UserCreateDto;
 import com.emergency.entity.User;
 import com.emergency.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController
-    @RequestMapping("/api/users")
-    public class UserController {
-        @Autowired
-        private UserService userService;
+@AllArgsConstructor
+@RequestMapping("/api/users")
+public class UserController {
 
-        @PostMapping
-        public ResponseEntity<User> createUser(@RequestBody User user){
-            User createUser = userService.createUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createUser);
-        }
+    private UserService userService;
 
-        @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(){
-            List<User> users = userService.getAllUsers();
-            return ResponseEntity.ok(users);
-        }
+    @PostMapping(path = "/create")
+    public UserAfterCreationDto createUser(@RequestBody UserCreateDto userCreateDto) {
+        return userService.createUser(userCreateDto);
     }
+
+    @GetMapping(path = "/get/{id}")
+    public User findBy(@PathVariable("id") String id) {
+        return userService.getUserById(id);
+    }
+}
 

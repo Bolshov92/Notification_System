@@ -9,14 +9,9 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
 
-@Entity
-@Getter
-@Setter
+@Data
 public class Contact {
 
-    @jakarta.persistence.Id
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String phoneNumber;
