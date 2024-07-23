@@ -1,5 +1,5 @@
 INSERT INTO users (id, name, email, phone_number)
-VALUES (1, 'Viacheslav', 'bolshov92@gmail.com', '7512376806');
+VALUES (1, 'admin', 'admin@gmail.com', '751117575');
 
 
 INSERT INTO role (role_id, role_name)
