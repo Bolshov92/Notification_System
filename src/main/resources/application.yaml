@@ -26,7 +26,7 @@ logging:
     com.example.construction_company_management: DEBUG
 
 twilio:
-  account-sid: ACf678f14131c801834d2458a67d447033
-  auth-token: 27290f5350cf7b9a042a3abcbaf9800f
-  phone-number: +447893941511
+  account-sid:  ${TWILIO_ACCOUNT_SID}
+  auth-token: ${TWILIO_AUTH_TOKEN}
+  phone-number: ${TWILIO_PHONE_NUMBER}
 
