@@ -15,11 +15,12 @@
         <module>Sms-service</module>
         <module>contact-service</module>
         <module>config-service</module>
+        <module>file-service</module>
+        <module>notification-service</module>
     </modules>
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -47,5 +48,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>

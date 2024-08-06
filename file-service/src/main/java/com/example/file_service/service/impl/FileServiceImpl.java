@@ -1,8 +1,11 @@
 package com.example.file_service.service.impl;
 
-
+import com.example.contact_service.entity.Contact;
+import com.example.file_service.entity.File;
+import com.example.contact_service.service.ContactService;
 import com.example.file_service.repository.FileRepository;
 import com.example.file_service.service.FileService;
+import com.example.file_service.service.SmsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
+
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -44,14 +48,12 @@ public class FileServiceImpl implements FileService {
             throw new IllegalArgumentException("File is empty.");
         }
 
-
         File dbFile = new File();
         dbFile.setFileName(file.getOriginalFilename());
         dbFile.setType(file.getContentType());
         dbFile.setData(file.getBytes());
         dbFile.setFilePath("/some/path");
         dbFile.setUploadTime(new Timestamp(System.currentTimeMillis()));
-
 
         File savedFile = fileRepository.save(dbFile);
 
