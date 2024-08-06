@@ -1,6 +1,6 @@
-package com.emergency.service.impl;
+package com.example.Sms_service.service.impl;
 
-import com.emergency.service.SmsService;
+import com.example.Sms_service.service.SmsService;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;

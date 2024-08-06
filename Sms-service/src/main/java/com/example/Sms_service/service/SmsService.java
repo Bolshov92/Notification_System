@@ -1,4 +1,4 @@
-package com.emergency.service;
+package com.example.Sms_service.service;
 
 public interface SmsService {
 
