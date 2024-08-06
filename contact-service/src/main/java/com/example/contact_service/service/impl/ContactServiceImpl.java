@@ -1,7 +1,7 @@
-package com.emergency.service.impl;
+package com.example.contact_service.service.impl;
 
-import com.emergency.entity.Contact;
-import com.emergency.service.ContactService;
+import com.example.contact_service.entity.Contact;
+import com.example.contact_service.service.ContactService;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.slf4j.Logger;

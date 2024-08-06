@@ -1,6 +1,6 @@
-package com.emergency.service;
+package com.example.contact_service.service;
 
-import com.emergency.entity.Contact;
+import com.example.contact_service.entity.Contact;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

@@ -1,6 +1,6 @@
-package com.emergency.repository;
+package com.example.event_service.repository;
 
-import com.emergency.entity.Event;
+import com.example.event_service.entity.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

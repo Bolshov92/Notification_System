@@ -1,11 +1,8 @@
-package com.emergency.service.impl;
+package com.example.file_service.service.impl;
 
-import com.emergency.entity.Contact;
-import com.emergency.entity.File;
-import com.emergency.repository.FileRepository;
-import com.emergency.service.ContactService;
-import com.emergency.service.FileService;
-import com.emergency.service.SmsService;
+
+import com.example.file_service.repository.FileRepository;
+import com.example.file_service.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
-package com.emergency.service;
+package com.example.file_service.service;package
 
-import com.emergency.entity.File;
+import com.example.file_service.entity.entity.File;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

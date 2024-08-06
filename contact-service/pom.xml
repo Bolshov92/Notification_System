@@ -63,7 +63,12 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <artifactId>opencsv</artifactId>
+            <groupId>com.opencsv</groupId>
+            <version>5.7.1</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

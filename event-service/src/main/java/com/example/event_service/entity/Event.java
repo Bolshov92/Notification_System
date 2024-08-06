@@ -1,4 +1,5 @@
-package com.emergency.entity;
+package com.example.event_service.entity;
+
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

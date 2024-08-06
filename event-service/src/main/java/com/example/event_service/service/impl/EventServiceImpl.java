@@ -1,8 +1,9 @@
-package com.emergency.service.impl;
+package com.example.event_service.service.impl.EventServiceImpl;
 
-import com.emergency.entity.Event;
-import com.emergency.repository.EventRepository;
-import com.emergency.service.EventService;
+
+import com.example.event_service.entity.Event;
+import com.example.event_service.repository.EventRepository;
+import com.example.event_service.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

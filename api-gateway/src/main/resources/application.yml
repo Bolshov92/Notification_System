@@ -1,1 +1,12 @@
-spring.application.name=api-gateway
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: sms-service
+          uri: lb://SMS-SERVICE
+          predicates:
+            - Path=/sms/**
+        - id: contact-service
+          uri: lb://CONTACT-SERVICE
+          predicates:
+            - Path=/contacts/**

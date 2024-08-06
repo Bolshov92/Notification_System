@@ -1,4 +1,4 @@
-package com.emergency.entity;
+package com.example.contact_service.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

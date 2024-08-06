@@ -1,6 +1,6 @@
-package com.emergency.service;
+package com.example.event_service.service;
 
-import com.emergency.entity.Event;
+import com.example.event_service.entity.Event;
 
 import java.util.List;
 

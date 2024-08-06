@@ -1,4 +1,4 @@
-package com.emergency.entity;
+package com.example.file_service.entity.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
