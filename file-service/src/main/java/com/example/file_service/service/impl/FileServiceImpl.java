@@ -2,8 +2,8 @@ package com.example.file_service.service.impl;
 
 import com.example.contact_service.entity.Contact;
 import com.example.file_service.entity.File;
-import com.example.contact_service.service.ContactService;
 import com.example.file_service.repository.FileRepository;
+import com.example.file_service.service.ContactService;
 import com.example.file_service.service.FileService;
 import com.example.file_service.service.SmsService;
 import org.slf4j.Logger;
