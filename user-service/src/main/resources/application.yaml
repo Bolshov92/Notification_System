@@ -25,8 +25,4 @@ logging:
     root: INFO
     com.example.construction_company_management: DEBUG
 
-twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  phone-number: ${TWILIO_PHONE_NUMBER}
 
