@@ -10,7 +10,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
   datasource:
-    url: jdbc:mysql://localhost:3306/emergency_contacts?allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/user_service?allowMultiQueries=true
     username: root
     password: Bolshov92
     driver-class-name: com.mysql.cj.jdbc.Driver
