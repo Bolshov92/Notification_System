@@ -1,10 +1,10 @@
 package com.example.user_service.service.impl;
 
-import com.emergency.mapper.UserMapper;
 import com.example.user_service.dto.UserAfterCreationDto;
 import com.example.user_service.dto.UserCreateDto;
 import com.example.user_service.entity.User;
 import com.example.user_service.entity.UserInfo;
+import com.example.user_service.mapper.UserMapper;
 import com.example.user_service.repository.RoleRepository;
 import com.example.user_service.repository.UserInfoRepository;
 import com.example.user_service.repository.UserRepository;

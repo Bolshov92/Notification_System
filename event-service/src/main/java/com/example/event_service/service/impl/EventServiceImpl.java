@@ -1,4 +1,4 @@
-package com.example.event_service.service.impl.EventServiceImpl;
+package com.example.event_service.service.impl;
 
 
 import com.example.event_service.entity.Event;

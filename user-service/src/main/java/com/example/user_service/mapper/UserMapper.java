@@ -1,12 +1,14 @@
-package com.emergency.mapper;
+package com.example.user_service.mapper;
 
-import com.emergency.dto.UserAfterCreationDto;
-import com.emergency.dto.UserCreateDto;
-import com.emergency.entity.User;
+
+import com.example.user_service.dto.UserAfterCreationDto;
+import com.example.user_service.dto.UserCreateDto;
+import com.example.user_service.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
+
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {

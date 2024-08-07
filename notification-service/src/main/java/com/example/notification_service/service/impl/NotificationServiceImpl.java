@@ -1,12 +1,12 @@
-package com.emergency.service.impl;
+package com.example.notification_service.service.impl;
 
-import com.emergency.service.NotificationService;
-import com.emergency.service.SmsService;
+
+import com.example.Sms_service.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NotificationServiceImpl implements NotificationService {
+public class NotificationServiceImpl implements com.emergency.service.NotificationService {
     @Autowired
     private SmsService smsService;
 

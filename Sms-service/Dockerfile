@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17
 WORKDIR /app
-COPY target/sms-service.jar /app/sms-service.jar
-ENTRYPOINT ["java","-jar","/app/sms-service.jar"]
+COPY target/sms-service-0.0.1-SNAPSHOT.jar /app/sms-service.jar
+ENTRYPOINT ["java", "-jar", "/app/sms-service.jar"]
