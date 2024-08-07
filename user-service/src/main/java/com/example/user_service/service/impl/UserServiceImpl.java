@@ -1,17 +1,17 @@
-package com.emergency.service.impl;
+package com.example.user_service.service.impl;
 
-import com.emergency.dto.UserAfterCreationDto;
-import com.emergency.dto.UserCreateDto;
-import com.emergency.entity.User;
-import com.emergency.entity.UserInfo;
 import com.emergency.mapper.UserMapper;
-import com.emergency.repository.RoleRepository;
-import com.emergency.repository.UserInfoRepository;
-import com.emergency.repository.UserRepository;
-import com.emergency.service.UserService;
+import com.example.user_service.dto.UserAfterCreationDto;
+import com.example.user_service.dto.UserCreateDto;
+import com.example.user_service.entity.User;
+import com.example.user_service.entity.UserInfo;
+import com.example.user_service.repository.RoleRepository;
+import com.example.user_service.repository.UserInfoRepository;
+import com.example.user_service.repository.UserRepository;
+import com.example.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.emergency.entity;
+package com.example.user_service.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

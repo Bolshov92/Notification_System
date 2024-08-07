@@ -1,9 +1,9 @@
-package com.emergency.controller;
+package com.example.user_service.controller;
 
-import com.emergency.dto.UserAfterCreationDto;
-import com.emergency.dto.UserCreateDto;
-import com.emergency.entity.User;
-import com.emergency.service.UserService;
+import com.example.user_service.dto.UserAfterCreationDto;
+import com.example.user_service.dto.UserCreateDto;
+import com.example.user_service.entity.User;
+import com.example.user_service.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

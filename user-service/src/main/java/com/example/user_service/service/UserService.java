@@ -1,8 +1,8 @@
-package com.emergency.service;
+package com.example.user_service.service;
 
-import com.emergency.dto.UserAfterCreationDto;
-import com.emergency.dto.UserCreateDto;
-import com.emergency.entity.User;
+import com.example.user_service.dto.UserAfterCreationDto;
+import com.example.user_service.dto.UserCreateDto;
+import com.example.user_service.entity.User;
 
 public interface UserService {
     UserAfterCreationDto createUser(UserCreateDto user);

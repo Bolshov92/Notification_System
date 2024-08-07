@@ -1,6 +1,6 @@
-package com.emergency.config;
+package com.example.user_service.config;
 
-import com.emergency.security.UserDetailsServiceImpl;
+import com.example.user_service.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

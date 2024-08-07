@@ -1,4 +1,4 @@
-package com.emergency.dto;
+package com.example.user_service.dto;
 
 import lombok.Value;
 

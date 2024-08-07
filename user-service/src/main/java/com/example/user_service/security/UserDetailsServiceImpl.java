@@ -1,7 +1,7 @@
-package com.emergency.security;
+package com.example.user_service.security;
 
-import com.emergency.entity.User;
-import com.emergency.repository.UserRepository;
+import com.example.user_service.entity.User;
+import com.example.user_service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

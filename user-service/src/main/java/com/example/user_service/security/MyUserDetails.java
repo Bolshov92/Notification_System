@@ -1,7 +1,7 @@
-package com.emergency.security;
+package com.example.user_service.security;
 
-import com.emergency.entity.User;
-import com.emergency.entity.UserInfo;
+import com.example.user_service.entity.User;
+import com.example.user_service.entity.UserInfo;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
