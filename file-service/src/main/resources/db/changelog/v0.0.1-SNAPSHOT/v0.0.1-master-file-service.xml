@@ -4,6 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="create-tables-notification.sql" relativeToChangelogFile="true"/>
-<!--    <include file="insert-data-changelog.sql" relativeToChangelogFile="true"/>-->
+    <include file="create-tables-sms.sql" relativeToChangelogFile="true"/>
+<!--    <include file="insert-data-sms.sql" relativeToChangelogFile="true"/>-->
 </databaseChangeLog>
