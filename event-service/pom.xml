@@ -72,7 +72,12 @@
 			<version>5.8.1</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <artifactId>lombok</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

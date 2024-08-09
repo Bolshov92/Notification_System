@@ -4,6 +4,7 @@ package com.example.event_service.entity;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,10 +17,12 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private String description;
-    private String type;
-    private String recipient;
+
+    @Column(name = "event_name")
+    private String eventName;
+
+    @Column(name = "event_date ")
+    private String eventDate;
 
     public void setId(Long id) {
         this.id = id;
