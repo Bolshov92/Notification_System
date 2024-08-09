@@ -2,3 +2,22 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/event_service?allowMultiQueries=true
+    username: root
+    password: Bolshov92
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml

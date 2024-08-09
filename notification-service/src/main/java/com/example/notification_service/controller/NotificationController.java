@@ -1,14 +1,13 @@
-package com.emergency.controller;
+package com.example.notification_service.controller;
 
-import com.emergency.service.NotificationService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Enumeration;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -17,14 +16,13 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @PostMapping("/send-sms")
-    public void sendSms(@RequestParam String to, @RequestParam String message, HttpServletRequest request) {
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            String paramName = parameterNames.nextElement();
-            System.out.println("Parameter Name - " + paramName + ", Value - " + request.getParameter(paramName));
-        }
+    public Mono<Void> sendSms(@RequestParam String to, @RequestParam String message, ServerHttpRequest request) {
+        request.getQueryParams().forEach((paramName, paramValues) -> {
+            System.out.println("Parameter Name - " + paramName + ", Value - " + paramValues);
+        });
 
         System.out.println("Received parameters - to: " + to + ", message: " + message);
         notificationService.sendNotification(to, message);
+        return Mono.empty();
     }
 }

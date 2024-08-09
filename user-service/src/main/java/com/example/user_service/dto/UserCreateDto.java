@@ -1,8 +1,9 @@
 package com.example.user_service.dto;
 
+import lombok.Data;
 import lombok.Value;
 
-@Value
+@Data
 public class UserCreateDto {
     String name;
     String email;

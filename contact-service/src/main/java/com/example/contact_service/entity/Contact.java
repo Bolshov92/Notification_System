@@ -1,19 +1,23 @@
 package com.example.contact_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
+import lombok.Data;
+
+import javax.persistence.*;
 
 @Data
+@Entity
+@Table(name = "Contact")
 public class Contact {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false, length = 255)
     private String name;
+
+    @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
     public Contact() {
@@ -23,5 +27,4 @@ public class Contact {
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
-
 }
