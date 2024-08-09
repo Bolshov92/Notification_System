@@ -3,8 +3,6 @@ package com.example.file_service.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 

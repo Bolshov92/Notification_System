@@ -1,8 +1,9 @@
 package com.example.user_service.entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 
 
 @Entity

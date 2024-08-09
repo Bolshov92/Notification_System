@@ -1,6 +1,6 @@
 package com.example.notification_service.controller;
 
-import com.emergency.service.NotificationService;
+import com.example.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

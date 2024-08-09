@@ -11,7 +11,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
   datasource:
-    url: jdbc:mysql://localhost:3306/emergency_contacts?allowMultiQueries=true
+    url: jdbc:mysql://localhost:3306/sms_service?allowMultiQueries=true
     username: root
     password: Bolshov92
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,8 +22,8 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-#  liquibase:
-#    change-log: classpath:/db/changelog/changelog-master.xml
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
 
 
 logging:
