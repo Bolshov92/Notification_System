@@ -1,7 +1,6 @@
 package com.example.file_service.service.impl;
 
 import com.example.contact_service.entity.Contact;
-import com.example.contact_service.service.ContactService;
 import com.example.file_service.dto.SmsRequest;
 import com.example.file_service.entity.File;
 import com.example.file_service.repository.FileRepository;
@@ -17,7 +16,6 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
-
 @Service
 public class FileServiceImpl implements FileService {
 
@@ -27,11 +25,7 @@ public class FileServiceImpl implements FileService {
     private FileRepository fileRepository;
 
     @Autowired
-    private RestTemplate    restTemplate;
-
-    @Autowired
-    private ContactService contactService;
-
+    private RestTemplate restTemplate;
 
     @Override
     public List<File> getAllFiles() {
@@ -59,7 +53,7 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
 
-        List<Contact> contacts = contactService.readContactsFromFile(file);
+        List<Contact> contacts = restTemplate.getForObject("http://api-gateway/contacts", List.class);
 
         for (Contact contact : contacts) {
             String message = "Hi, " + contact.getName() + ". This is an emergency notification.";
