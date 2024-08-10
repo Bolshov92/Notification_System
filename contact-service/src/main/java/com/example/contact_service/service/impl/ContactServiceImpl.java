@@ -7,7 +7,9 @@ import com.opencsv.exceptions.CsvValidationException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +23,8 @@ import java.util.List;
 @Service
 public class ContactServiceImpl implements ContactService {
     private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
-
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
     @Override
     public List<Contact> readContactsFromFile(MultipartFile file) throws IOException {
         List<Contact> contacts = new ArrayList<>();
@@ -38,6 +41,7 @@ public class ContactServiceImpl implements ContactService {
                     String phoneNumber = line[1];
                     Contact contact = new Contact(name, phoneNumber);
                     contacts.add(contact);
+                    kafkaTemplate.send("contact_topic", contact);
                     logger.info("Read contact: {}", contact);
                 } else {
                     logger.warn("Skipping line {} as it does not have enough elements", lineNumber);

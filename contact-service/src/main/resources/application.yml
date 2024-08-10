@@ -19,3 +19,8 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-contact-service.xml
 
+  kafka:
+    consumer:
+      group-id: contact-service-group
+    topic:
+      name: contact-topic

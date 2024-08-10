@@ -24,11 +24,18 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-sms.xml
 
+  kafka:
+    consumer:
+      group-id: sms-service-group
+    topic:
+      name: sms-topic
+
 
 logging:
   level:
     root: INFO
     com.example.construction_company_management: DEBUG
+
 
 twilio:
   account-sid:  ${TWILIO_ACCOUNT_SID}

@@ -21,3 +21,9 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
+
+  kafka:
+    consumer:
+      group-id: event-service-group
+    topic:
+      name: event-topic
