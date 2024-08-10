@@ -4,5 +4,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+<<<<<<< HEAD:Sms-service/src/main/resources/db/changelog/changelog-master.xml
     <include file="v0.0.1-SNAPSHOT/v0.0.1-master-file-service.xml" relativeToChangelogFile="true"/>
+=======
+    <include file="v0.0.1-SNAPSHOT/v0.0.1-master-sms.xml" relativeToChangelogFile="true"/>
+>>>>>>> development:Sms-service/src/main/resources/db/changelog/changelog-master-sms.xml
 </databaseChangeLog>

@@ -1,4 +1,4 @@
-package com.example.Sms_service.dto;
+package com.example.smsservice.dto;
 
 import lombok.Data;
 @Data

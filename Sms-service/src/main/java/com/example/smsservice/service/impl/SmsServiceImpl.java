@@ -1,6 +1,6 @@
-package com.example.Sms_service.service.impl;
+package com.example.smsservice.service.impl;
 
-import com.example.Sms_service.service.SmsService;
+import com.example.smsservice.service.SmsService;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;

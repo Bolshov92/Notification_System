@@ -1,4 +1,4 @@
-package com.example.Sms_service.entity;
+package com.example.smsservice.entity;
 
 import lombok.Data;
 

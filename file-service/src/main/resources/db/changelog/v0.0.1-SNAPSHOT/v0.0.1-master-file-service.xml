@@ -5,7 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <include file="create-tables-sms.sql" relativeToChangelogFile="true"/>
+=======
+    <include file="create-tables.sql" relativeToChangelogFile="true"/>
+>>>>>>> development
 <!--    <include file="insert-data-sms.sql" relativeToChangelogFile="true"/>-->
 =======
 <<<<<<<< HEAD:Sms-service/src/main/resources/db/changelog/v0.0.1-SNAPSHOT/v0.0.1-master.xml
