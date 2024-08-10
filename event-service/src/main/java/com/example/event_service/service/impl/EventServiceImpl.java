@@ -7,6 +7,7 @@ import com.example.event_service.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -32,5 +33,12 @@ public class EventServiceImpl implements EventService {
     @Override
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
+    }
+
+    public Event createEventFromKafka(String contactJson) {
+        Event event = new Event();
+        event.setEventName("New contact received : " + contactJson);
+        event.setEventDate(LocalDate.now().toString());
+        return eventRepository.save(event);
     }
 }

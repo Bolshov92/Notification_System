@@ -10,6 +10,7 @@ import com.example.user_service.repository.UserInfoRepository;
 import com.example.user_service.repository.UserRepository;
 import com.example.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserInfoRepository userInfoRepository;
     private final RoleRepository roleRepository;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -45,6 +47,9 @@ public class UserServiceImpl implements UserService {
         user.setPhoneNumber(userCreateDto.getPhoneNumber());
         user.setUserInfo(savedUserInfo);
         User savedUser = userRepository.save(user);
+
+        kafkaTemplate.send("user-topic", savedUser);
+
         UserAfterCreationDto userAfterCreationDto = userMapper.toDto(savedUser);
         userAfterCreationDto.setUserId(String.valueOf(savedUser.getId()));
 

@@ -4,6 +4,7 @@ import com.example.contact_service.entity.Contact;
 import com.example.file_service.dto.SmsRequest;
 import com.example.file_service.entity.File;
 import com.example.file_service.repository.FileRepository;
+import com.example.file_service.service.FileProducer;
 import com.example.file_service.service.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,12 +21,11 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+    @Autowired
+    private FileProducer fileProducer;
 
     @Autowired
     private FileRepository fileRepository;
-
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Override
     public List<File> getAllFiles() {
@@ -53,14 +53,7 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
 
-        List<Contact> contacts = restTemplate.getForObject("http://api-gateway/contacts", List.class);
-
-        for (Contact contact : contacts) {
-            String message = "Hi, " + contact.getName() + ". This is an emergency notification.";
-            SmsRequest smsRequest = new SmsRequest(contact.getPhoneNumber(), message);
-
-            restTemplate.postForObject("http://api-gateway/sms/send", smsRequest, String.class);
-        }
+        fileProducer.sendMessage(String.valueOf(savedFile));
         return savedFile;
     }
 
