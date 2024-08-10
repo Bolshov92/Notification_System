@@ -15,11 +15,8 @@
     </properties>
 
     <modules>
-        <module>eureka-server</module>
-        <module>api-gateway</module>
         <module>Sms-service</module>
         <module>contact-service</module>
-        <module>config-service</module>
         <module>file-service</module>
         <module>notification-service</module>
     </modules>
