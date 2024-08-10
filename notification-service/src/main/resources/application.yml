@@ -20,3 +20,9 @@ spring:
 
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-notification.xml
+
+  kafka:
+    consumer:
+      group-id: notification-service-group
+    topic:
+      name: notification-topic

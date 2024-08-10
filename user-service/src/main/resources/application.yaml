@@ -19,6 +19,13 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master.xml
 
+  profiles:
+    include: kafka
+
+    kafka:
+      topic:
+        name: user-topic
+
 
 logging:
   level:
