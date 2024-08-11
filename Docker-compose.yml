@@ -132,6 +132,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://sms-db:3306/sms_db
       SPRING_DATASOURCE_USERNAME: sms_user
       SPRING_DATASOURCE_PASSWORD: sms_password
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
+      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
     ports:
       - "8085:8080"
     depends_on:
@@ -150,6 +153,22 @@ services:
     depends_on:
       - user-db
 
+  zookeeper:
+    image: zookeeper:3.6.3
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+
 volumes:
   contact-db-data:
   event-db-data:
@@ -157,3 +176,4 @@ volumes:
   notification-db-data:
   sms-db-data:
   user-db-data:
+
