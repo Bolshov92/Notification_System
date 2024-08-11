@@ -1,7 +1,5 @@
 package com.example.file_service.service.impl;
 
-import com.example.contact_service.entity.Contact;
-import com.example.file_service.dto.SmsRequest;
 import com.example.file_service.entity.File;
 import com.example.file_service.repository.FileRepository;
 import com.example.file_service.service.FileProducer;
@@ -10,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

@@ -15,6 +15,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.xml
+
   kafka:
     consumer:
       group-id: user-service-group
