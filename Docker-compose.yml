@@ -72,6 +72,84 @@ services:
     volumes:
       - user-db-data:/var/lib/mysql
 
+  contact-service:
+    build:
+      context: ./contact-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://contact-db:3306/contacts_db
+      SPRING_DATASOURCE_USERNAME: contact_user
+      SPRING_DATASOURCE_PASSWORD: contact_password
+    ports:
+      - "8081:8080"
+    depends_on:
+      - contact-db
+
+  event-service:
+    build:
+      context: ./event-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://event-db:3306/events_db
+      SPRING_DATASOURCE_USERNAME: event_user
+      SPRING_DATASOURCE_PASSWORD: event_password
+    ports:
+      - "8082:8080"
+    depends_on:
+      - event-db
+
+  file-service:
+    build:
+      context: ./file-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://file-db:3306/files_db
+      SPRING_DATASOURCE_USERNAME: file_user
+      SPRING_DATASOURCE_PASSWORD: file_password
+    ports:
+      - "8083:8080"
+    depends_on:
+      - file-db
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://notification-db:3306/notifications_db
+      SPRING_DATASOURCE_USERNAME: notification_user
+      SPRING_DATASOURCE_PASSWORD: notification_password
+    ports:
+      - "8084:8080"
+    depends_on:
+      - notification-db
+
+  sms-service:
+    build:
+      context: ./sms-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://sms-db:3306/sms_db
+      SPRING_DATASOURCE_USERNAME: sms_user
+      SPRING_DATASOURCE_PASSWORD: sms_password
+    ports:
+      - "8085:8080"
+    depends_on:
+      - sms-db
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/users_db
+      SPRING_DATASOURCE_USERNAME: user_user
+      SPRING_DATASOURCE_PASSWORD: user_password
+    ports:
+      - "8086:8080"
+    depends_on:
+      - user-db
+
 volumes:
   contact-db-data:
   event-db-data:
