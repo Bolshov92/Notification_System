@@ -1,10 +1,10 @@
-CREATE TABLE role
+CREATE TABLE IF NOT EXISTS role
 (
     role_id   BIGINT AUTO_INCREMENT PRIMARY KEY,
     role_name VARCHAR(255) UNIQUE
 );
 
-CREATE TABLE users
+CREATE TABLE IF NOT EXISTS users
 (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     name         VARCHAR(255),
@@ -13,7 +13,7 @@ CREATE TABLE users
     UNIQUE (email)
 );
 
-CREATE TABLE user_info
+CREATE TABLE IF NOT EXISTS user_info
 (
     id        BIGINT AUTO_INCREMENT PRIMARY KEY,
     password  VARCHAR(255),
