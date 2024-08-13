@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
+@Table(name = "notifications")
 public class Notification {
 
     @Id

@@ -14,6 +14,10 @@
 >>>>>>>> origin/development:file-service/src/main/resources/db/changelog/v0.0.1-SNAPSHOT/v0.0.1-master-file-service.xml
 =======
     <include file="create-tables.sql" relativeToChangelogFile="true"/>
+<<<<<<< HEAD
     <!--    <include file="insert-data.sql" relativeToChangelogFile="true"/>-->
 >>>>>>> development:Sms-service/src/main/resources/db/changelog/v0.0.1-SNAPSHOT/v0.0.1-master-sms.xml
+=======
+    <!--    <include file="insert-data-role.sql" relativeToChangelogFile="true"/>-->
+>>>>>>> development
 </databaseChangeLog>

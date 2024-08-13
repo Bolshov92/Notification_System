@@ -1,14 +1,17 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8081
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/contact_service?allowMultiQueries=true
-    username: root
-    password: Bolshov92
+    url: jdbc:mysql://contact-db:3306/contacts_db?allowMultiQueries=true
+    username: contact_user
+    password: contact_password
     driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/contact_service?allowMultiQueries=true
+#    username: root
+#    password: Bolshov92
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
@@ -16,11 +19,21 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
+
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-contact-service.xml
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> development
   kafka:
     consumer:
       group-id: contact-service-group
     topic:
       name: contact-topic
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
+>>>>>>> development
