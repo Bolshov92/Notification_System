@@ -71,6 +71,11 @@ services:
       - "3312:3306"
     volumes:
       - user-db-data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   contact-service:
     build:
@@ -151,7 +156,8 @@ services:
     ports:
       - "8086:8080"
     depends_on:
-      - user-db
+      user-db:
+        condition: service_healthy
 
   zookeeper:
     image: zookeeper:3.6.3
