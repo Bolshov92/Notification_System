@@ -1,5 +1,10 @@
 package com.example.file_service.service.impl;
 
+<<<<<<< HEAD
+=======
+import com.example.contact_service.entity.Contact;
+import com.example.file_service.dto.SmsRequest;
+>>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
 import com.example.file_service.entity.File;
 import com.example.file_service.repository.FileRepository;
 import com.example.file_service.service.FileProducer;
@@ -24,6 +29,12 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private FileRepository fileRepository;
 
+<<<<<<< HEAD
+=======
+    @Autowired
+    private RestTemplate restTemplate;
+
+>>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
     @Override
     public List<File> getAllFiles() {
         return fileRepository.findAll();
@@ -50,7 +61,18 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
 
+<<<<<<< HEAD
         fileProducer.sendMessage(String.valueOf(savedFile));
+=======
+        List<Contact> contacts = restTemplate.getForObject("http://api-gateway/contacts", List.class);
+
+        for (Contact contact : contacts) {
+            String message = "Hi, " + contact.getName() + ". This is an emergency notification.";
+            SmsRequest smsRequest = new SmsRequest(contact.getPhoneNumber(), message);
+
+            restTemplate.postForObject("http://api-gateway/sms/send", smsRequest, String.class);
+        }
+>>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
         return savedFile;
     }
 
