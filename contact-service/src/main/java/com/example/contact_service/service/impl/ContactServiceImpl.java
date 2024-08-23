@@ -7,13 +7,8 @@ import com.opencsv.exceptions.CsvValidationException;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<<<<<<< HEAD
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.kafka.core.KafkaTemplate;
-=======
-import org.springframework.context.annotation.ComponentScan;
->>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
