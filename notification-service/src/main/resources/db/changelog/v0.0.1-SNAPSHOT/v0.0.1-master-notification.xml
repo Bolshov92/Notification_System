@@ -6,5 +6,4 @@
 
     <include file="create-tables-notification.sql" relativeToChangelogFile="true"/>
     <include file="insert-data-changelog.sql" relativeToChangelogFile="true"/>
-
 </databaseChangeLog>
