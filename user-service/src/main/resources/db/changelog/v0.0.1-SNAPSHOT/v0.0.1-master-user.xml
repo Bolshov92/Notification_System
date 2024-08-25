@@ -4,7 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-<<<<<<< HEAD
     <changeSet id="1" author="s">
         <sqlFile path="create-table-role.sql" relativeToChangelogFile="true"/>
     </changeSet>
@@ -29,8 +28,4 @@
         <sqlFile path="insert-data-userInfo.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
-=======
-    <include file="create-tables.sql" relativeToChangelogFile="true"/>
-    <include file="insert-data.sql" relativeToChangelogFile="true"/>
->>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
 </databaseChangeLog>

@@ -1,16 +1,19 @@
-server:
-  port: 8084
-
 spring:
   datasource:
     url: jdbc:mysql://notification-db:3306/notifications_db?allowMultiQueries=true
     username: notification_user
     password: notification_password
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/notification_service?allowMultiQueries=true
+#    username: root
+#    password: Bolshov92
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -18,8 +21,8 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-notification.xml
 
-  kafka:
-    consumer:
-      group-id: notification-service-group
-    topic:
-      name: notification-topic
+kafka:
+  consumer:
+    group-id: notification-service-group
+  topic:
+    name: notification-topic

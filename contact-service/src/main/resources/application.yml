@@ -1,5 +1,3 @@
-server:
-  port: 8081
 
 spring:
   datasource:
@@ -15,7 +13,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
@@ -23,17 +21,9 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/changelog-master-contact-service.xml
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> development
   kafka:
     consumer:
       group-id: contact-service-group
     topic:
       name: contact-topic
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 86b55d78e87e0fb261af64ab093892b1a218c909
->>>>>>> development
+
