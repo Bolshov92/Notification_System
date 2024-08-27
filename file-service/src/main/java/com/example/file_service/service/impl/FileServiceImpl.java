@@ -18,12 +18,12 @@ import java.util.List;
 public class FileServiceImpl implements FileService {
 
     private static final Logger logger = LoggerFactory.getLogger(FileServiceImpl.class);
+
     @Autowired
     private FileProducer fileProducer;
 
     @Autowired
     private FileRepository fileRepository;
-
 
     @Override
     public List<File> getAllFiles() {
@@ -51,7 +51,7 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
 
-        fileProducer.sendMessage(String.valueOf(savedFile));
+        fileProducer.sendMessage(savedFile);
         return savedFile;
     }
 

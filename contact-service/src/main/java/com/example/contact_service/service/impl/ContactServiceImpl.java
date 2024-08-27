@@ -8,6 +8,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,37 +23,23 @@ import java.util.List;
 @Service
 public class ContactServiceImpl implements ContactService {
     private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
+
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
-    @Override
-    public List<Contact> readContactsFromFile(MultipartFile file) throws IOException {
-        List<Contact> contacts = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-             CSVReader csvReader = new CSVReader(reader)) {
+    @KafkaListener(topics = "contacts-topic", groupId = "contact-service-group")
+    public void listen(String message) {
+        logger.info("Received contact from Kafka: {}", message);
 
-            String[] line;
-            int lineNumber = 0;
-            while ((line = csvReader.readNext()) != null){
-                lineNumber++;
-                if (line.length >= 2) {
-                    String name = line[0];
-                    String phoneNumber = line[1];
-                    Contact contact = new Contact(name, phoneNumber);
-                    contacts.add(contact);
-                    kafkaTemplate.send("contact_topic", contact);
-                    logger.info("Read contact: {}", contact);
-                } else {
-                    logger.warn("Skipping line {} as it does not have enough elements", lineNumber);
-                }
-            }
-        } catch (IOException e) {
-            throw new IOException("Failed to read contacts from file", e);
-        } catch (CsvValidationException e) {
-            throw new RuntimeException(e);
+        String[] parts = message.split(",");
+        if (parts.length >= 2) {
+            String name = parts[0].trim();
+            String phoneNumber = parts[1].trim();
+            Contact contact = new Contact(name, phoneNumber);
+            kafkaTemplate.send("sms-topic", contact);
+        } else {
+            logger.error("Invalid contact format received: {}", message);
         }
-
-        return contacts;
     }
 
 }
