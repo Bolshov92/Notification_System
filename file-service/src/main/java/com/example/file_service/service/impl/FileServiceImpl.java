@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -51,7 +53,15 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
 
-        fileProducer.sendMessage(savedFile);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                fileProducer.sendMessage(line);
+            }
+        } catch (IOException e) {
+            logger.error("Error reading the file: " + e.getMessage());
+        }
+
         return savedFile;
     }
 

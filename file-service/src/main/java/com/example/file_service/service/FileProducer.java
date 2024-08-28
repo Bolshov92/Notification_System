@@ -14,16 +14,8 @@ public class FileProducer {
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    public void sendMessage(File file) {
-        try {
-            String message = objectMapper.writeValueAsString(file);
-            kafkaTemplate.send(TOPIC, message);
-            System.out.println("Message sent to Kafka: " + message);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void sendMessage(String message) {
+        kafkaTemplate.send(TOPIC, message);
+        System.out.println("Message sent to Kafka: " + message);
     }
 }

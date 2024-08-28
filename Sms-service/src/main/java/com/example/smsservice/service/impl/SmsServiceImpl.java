@@ -1,13 +1,13 @@
 package com.example.smsservice.service.impl;
 
 import com.example.smsservice.service.SmsService;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,9 @@ public class SmsServiceImpl implements SmsService {
 
     @Value("${twilio.phone-number}")
     private String fromPhoneNumber;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostConstruct
     private void init() {
@@ -55,9 +58,8 @@ public class SmsServiceImpl implements SmsService {
         logger.info("Received message from Kafka: {}", message);
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            Map<String, String> contactMap = objectMapper.readValue(message, new TypeReference<Map<String, String>>() {
-            });
+            // Преобразуем JSON-строку в Map
+            Map<String, String> contactMap = objectMapper.readValue(message, Map.class);
 
             String name = contactMap.get("name");
             String phoneNumber = contactMap.get("phoneNumber");
