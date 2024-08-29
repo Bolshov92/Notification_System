@@ -2,6 +2,7 @@ package com.example.contact_service.service;
 
 import com.example.contact_service.entity.Contact;
 import com.example.contact_service.service.impl.ContactServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,16 @@ public class KafkaContactConsumerService {
     @Autowired
     private ContactServiceImpl contactService;
 
-    @KafkaListener(topics = "files-topic", groupId = "contact-group")
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @KafkaListener(topics = "contacts-topic", groupId = "contact-group")
     public void consume(String message) {
         try {
-            String[] parts = message.split(",");
-            if (parts.length >= 2) {
-                String name = parts[0].trim();
-                String phoneNumber = parts[1].trim();
-                Contact contact = new Contact(name, phoneNumber);
-
-                contactService.sendContact(contact);
-            }
+            Contact contact = objectMapper.readValue(message, Contact.class);
+            contactService.sendContact(contact);
         } catch (Exception e) {
-
+            logger.error("Failed to process message: " + e.getMessage());
         }
     }
 }
