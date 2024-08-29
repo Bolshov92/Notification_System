@@ -58,11 +58,10 @@ public class SmsServiceImpl implements SmsService {
         logger.info("Received message from Kafka: {}", message);
 
         try {
-            // Преобразуем JSON-строку в Map
-            Map<String, String> contactMap = objectMapper.readValue(message, Map.class);
+            Map<String, Object> contactMap = objectMapper.readValue(message, Map.class);
 
-            String name = contactMap.get("name");
-            String phoneNumber = contactMap.get("phoneNumber");
+            String name = (String) contactMap.get("name");
+            String phoneNumber = (String) contactMap.get("phoneNumber");
 
             sendSms(phoneNumber, "Welcome " + name + "!");
         } catch (Exception e) {
