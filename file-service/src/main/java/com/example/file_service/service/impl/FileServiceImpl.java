@@ -56,7 +56,14 @@ public class FileServiceImpl implements FileService {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                fileProducer.sendMessage(line);
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    String name = parts[0].trim();
+                    String phoneNumber = parts[1].trim();
+                    fileProducer.sendMessage(name, phoneNumber);
+                } else {
+                    logger.error("Invalid line format: " + line);
+                }
             }
         } catch (IOException e) {
             logger.error("Error reading the file: " + e.getMessage());
