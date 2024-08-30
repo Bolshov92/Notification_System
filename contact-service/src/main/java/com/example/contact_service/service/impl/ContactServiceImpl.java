@@ -14,21 +14,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContactServiceImpl implements ContactService {
     private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
-    private static final String TOPIC = "contacts-topic";
+    private static final String TOPIC = "notification-topic";
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private ContactServiceImpl contactService;
 
     public void sendContact(Contact contact) {
         try {
             String contactJson = objectMapper.writeValueAsString(contact);
             kafkaTemplate.send(TOPIC, contactJson);
-            logger.info("Sent contact as JSON: {}", contactJson);
+            logger.info("Sent contact as JSON to notification-topic:  {}", contactJson);
         } catch (JsonProcessingException e) {
             logger.error("Failed to convert contact to JSON", e);
+        }
+    }
+
+    @KafkaListener(topics = "contacts-topic", groupId = "contact-group")
+    public void consume(String message) {
+        try {
+            Contact contact = objectMapper.readValue(message, Contact.class);
+            contactService.sendContact(contact);
+        } catch (Exception e) {
+            logger.error("Failed to process message: " + e.getMessage());
         }
     }
 }
