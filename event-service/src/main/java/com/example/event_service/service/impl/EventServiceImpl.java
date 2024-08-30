@@ -5,6 +5,7 @@ import com.example.event_service.entity.Event;
 import com.example.event_service.repository.EventRepository;
 import com.example.event_service.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -12,12 +13,20 @@ import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService {
+    private static final String TOPIC = "events-topic";
+
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
     @Override
     public Event createEvent(Event event) {
-        return eventRepository.save(event);
+        Event savedEvent = eventRepository.save(event);
+        String message = "Event: " + savedEvent.getEventName() + "| Date: " + savedEvent.getEventDate() + "| Text:  "  + savedEvent.getNotificationText();
+        kafkaTemplate.send(TOPIC, message);
+        return savedEvent;
     }
 
     @Override
@@ -35,10 +44,11 @@ public class EventServiceImpl implements EventService {
         eventRepository.deleteById(id);
     }
 
-    public Event createEventFromKafka(String contactJson) {
-        Event event = new Event();
-        event.setEventName("New contact received : " + contactJson);
-        event.setEventDate(LocalDate.now().toString());
-        return eventRepository.save(event);
+    private void sendEventToKafka(Event event) {
+        String eventJson = String.format(
+                "{\"id\":%d,\"eventName\":\"%s\",\"eventDate\":\"%s\",\"notificationText\":\"%s\"}",
+                event.getId(), event.getEventName(), event.getEventDate(), event.getNotificationText()
+        );
+        kafkaTemplate.send(TOPIC, eventJson);
     }
 }
