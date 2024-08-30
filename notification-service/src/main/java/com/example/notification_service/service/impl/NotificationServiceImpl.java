@@ -52,28 +52,27 @@ public class NotificationServiceImpl implements NotificationService {
     @KafkaListener(topics = NOTIFICATION_TOPIC, groupId = "notification-group")
     public void handleNotificationEvent(String message) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> notificationDetails = objectMapper.readValue(message, Map.class);
-        String contactId = String.valueOf(notificationDetails.get("contactId"));
-        String eventId = String.valueOf(notificationDetails.get("eventId"));
+        Map<String, Object> eventDetails = objectMapper.readValue(message, Map.class);
 
-        String phoneNumber = contactCache.get(contactId);
-        String eventMessage = eventCache.get(eventId);
+        Long contactId = Long.valueOf((String) eventDetails.get("contactId"));
+        Long eventId = Long.valueOf((String) eventDetails.get("eventId"));
+        String contactName = (String) eventDetails.get("contactName");
+        String phoneNumber = (String) eventDetails.get("phoneNumber");
+        String eventMessage = (String) eventDetails.get("message");
 
-        if (phoneNumber != null && eventMessage != null) {
-            Notification notification = new Notification();
-            notification.setContactId(Long.valueOf(contactId));
-            notification.setEventId(Long.valueOf(eventId));
-            notification.setMessage(eventMessage);
-            notification.setStatus("Sent");
-            notification.setSentAt(new Timestamp(System.currentTimeMillis()));
+        Notification notification = new Notification();
+        notification.setContactId(contactId);
+        notification.setEventId(eventId);
+        notification.setContactName(contactName);
+        notification.setPhoneNumber(phoneNumber);
+        notification.setMessage(eventMessage);
+        notification.setStatus("Sent");
+        notification.setSentAt(new Timestamp(System.currentTimeMillis()));
 
-            notificationRepository.save(notification);
-            kafkaTemplate.send(SMS_TOPIC, notification.getMessage());
+        notificationRepository.save(notification);
+        kafkaTemplate.send(SMS_TOPIC, "To: " + phoneNumber + ", Message: " + eventMessage);
 
-            System.out.println("SMS notification sent: " + notification.getMessage());
-        } else {
-            System.out.println("Failed to send SMS: Missing contact or event information.");
-        }
+        System.out.println("SMS notification sent: " + notification.getMessage());
     }
 
     @Override

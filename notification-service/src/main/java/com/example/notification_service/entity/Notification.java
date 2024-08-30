@@ -18,6 +18,11 @@ public class Notification {
 
     @Column(name = "contact_id", nullable = false)
     private Long contactId;
+    @Column(name = "contact_name", nullable = false)
+    private String contactName;
+
+    @Column(name = "phone_number", nullable = false)
+    private String phoneNumber;
 
     @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
