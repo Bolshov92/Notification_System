@@ -53,17 +53,21 @@ public class SmsServiceImpl implements SmsService {
         }
     }
 
-    @KafkaListener(topics = "contacts-topic", groupId = "sms-service-group")
+    @KafkaListener(topics = "sms-notifications-topic", groupId = "sms-service-group")
     public void listen(String message) {
         logger.info("Received message from Kafka: {}", message);
 
         try {
-            Map<String, Object> contactMap = objectMapper.readValue(message, Map.class);
+            Map<String, Object> messageMap = objectMapper.readValue(message, Map.class);
 
-            String name = (String) contactMap.get("name");
-            String phoneNumber = (String) contactMap.get("phoneNumber");
+            String contactName = (String) messageMap.get("contactName");
+            String phoneNumber = (String) messageMap.get("phoneNumber");
+            String event = (String) messageMap.get("event");
+            String textMessage = (String) messageMap.get("message");
 
-            sendSms(phoneNumber, "Welcome " + name + "!");
+            String fullMessage = "Event: " + event + "\nMessage: " + textMessage;
+
+            sendSms(phoneNumber, fullMessage);
         } catch (Exception e) {
             logger.error("Failed to process message", e);
         }
