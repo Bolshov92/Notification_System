@@ -19,10 +19,10 @@ public class Notification {
     @Column(name = "contact_id", nullable = false)
     private Long contactId;
 
-    @Column(name = "message", nullable = false)
+    @Column(name = "message", nullable = false, columnDefinition = "TEXT")
     private String message;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
 
     @Column(name = "sent_at", nullable = false)
