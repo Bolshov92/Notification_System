@@ -24,6 +24,9 @@ public class Event {
     @Column(name = "event_date ")
     private String eventDate;
 
+    @Column(name = "notification_text")
+    private String notificationText;
+
     public void setId(Long id) {
         this.id = id;
     }
