@@ -21,8 +21,7 @@ public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private ContactServiceImpl contactService;
+
 
     public void sendContact(Contact contact) {
         try {
@@ -38,7 +37,7 @@ public class ContactServiceImpl implements ContactService {
     public void consume(String message) {
         try {
             Contact contact = objectMapper.readValue(message, Contact.class);
-            contactService.sendContact(contact);
+            sendContact(contact);
         } catch (Exception e) {
             logger.error("Failed to process message: " + e.getMessage());
         }
