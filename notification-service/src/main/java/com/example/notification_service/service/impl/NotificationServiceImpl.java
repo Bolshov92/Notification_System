@@ -51,6 +51,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @KafkaListener(topics = NOTIFICATION_TOPIC, groupId = "notification-group")
     public void handleNotificationEvent(String message) throws JsonProcessingException {
+        System.out.println("Received message: " + message);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> eventDetails = objectMapper.readValue(message, Map.class);
 
@@ -61,6 +62,13 @@ public class NotificationServiceImpl implements NotificationService {
         String eventMessage = (String) eventDetails.get("message");
 
         Notification notification = new Notification();
+        System.out.println("Deserialized Notification: " + notification);
+
+        if (notification.getContactId() == null || notification.getEventId() == null ||
+                notification.getPhoneNumber() == null || notification.getMessage() == null) {
+            System.err.println("Invalid notification data: " + notification);
+            return;
+        }
         notification.setContactId(contactId);
         notification.setEventId(eventId);
         notification.setContactName(contactName);
@@ -78,11 +86,18 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void sendNotification(String to, String message) {
         kafkaTemplate.send(NOTIFICATION_TOPIC, message);
+        ObjectMapper objectMapper = new ObjectMapper();
 
         Notification notification = new Notification();
         notification.setMessage(message);
         notification.setStatus("Sent");
         notification.setSentAt(new Timestamp(System.currentTimeMillis()));
+        try {
+            String jsonMessage = objectMapper.writeValueAsString(notification);
+            kafkaTemplate.send(NOTIFICATION_TOPIC, jsonMessage);
+        } catch (JsonProcessingException e) {
+            System.err.println("Failed to serialize notification: " + e.getMessage());
+        }
         notificationRepository.save(notification);
 
         System.out.println("Notification sent to Kafka: " + message);

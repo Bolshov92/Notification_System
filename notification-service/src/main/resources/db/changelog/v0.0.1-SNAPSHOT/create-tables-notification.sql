@@ -7,7 +7,5 @@ CREATE TABLE notifications
     phone_number VARCHAR(15) NOT NULL,
     message      TEXT NOT NULL,
     status       VARCHAR(50) NOT NULL,
-    sent_at      TIMESTAMP NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES events(id),
-    FOREIGN KEY (contact_id) REFERENCES contacts(id)
+    sent_at      TIMESTAMP NOT NULL
 );
