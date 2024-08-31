@@ -23,7 +23,7 @@ spring:
 
   kafka:
     consumer:
-      group-id: contact-service-group
+      group-id: contact-group
     topic:
       name: contact-topic
 
