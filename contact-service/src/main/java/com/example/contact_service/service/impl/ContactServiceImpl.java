@@ -1,6 +1,7 @@
 package com.example.contact_service.service.impl;
 
 import com.example.contact_service.entity.Contact;
+import com.example.contact_service.repository.ContactRepository;
 import com.example.contact_service.service.ContactService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,8 @@ public class ContactServiceImpl implements ContactService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ContactRepository contactRepository;
 
     public void sendContact(Contact contact) {
         try {
@@ -37,9 +40,12 @@ public class ContactServiceImpl implements ContactService {
     public void consume(String message) {
         try {
             Contact contact = objectMapper.readValue(message, Contact.class);
+            contactRepository.save(contact);
+            logger.info("Saved contact to database: {}", contact);
             sendContact(contact);
         } catch (Exception e) {
-            logger.error("Failed to process message: " + e.getMessage());
+            logger.error("Failed to process message: " + e.getMessage(), e);
         }
     }
+
 }
