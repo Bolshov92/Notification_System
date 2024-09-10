@@ -50,39 +50,26 @@ public class NotificationServiceImpl implements NotificationService {
         eventCache.put(eventId.toString(), eventMessage);
     }
 
-    @KafkaListener(topics = NOTIFICATION_TOPIC, groupId = "notification-group")
+    @KafkaListener(topics = "notification-topic", groupId = "notification-group")
     public void handleNotificationEvent(String message) {
         System.out.println("Received message: " + message);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> notificationDetails = objectMapper.readValue(message, Map.class);
 
-            String contactIdStr = String.valueOf(notificationDetails.get("contact_id"));
-            String eventIdStr = String.valueOf(notificationDetails.get("event_id")); // Обязательно добавьте event_id в контакт-сервис
-            String contactName = String.valueOf(notificationDetails.get("contact_name"));
-            String phoneNumber = String.valueOf(notificationDetails.get("phone_number"));
-            String messageText = String.valueOf(notificationDetails.get("message")); // Если вы отправляете message из event-сервиса
+            System.out.println("Parsed notification details: " + notificationDetails);
 
-            Long contactId = contactIdStr.isEmpty() ? null : Long.valueOf(contactIdStr);
-            Long eventId = eventIdStr.isEmpty() ? null : Long.valueOf(eventIdStr);
+            Long contactId = Long.valueOf(String.valueOf(notificationDetails.get("contact_id")));
+            String contactName = (String) notificationDetails.get("contact_name");
+            String phoneNumber = (String) notificationDetails.get("phone_number");
+            String messageText = (String) notificationDetails.get("message");
 
-            if (contactId != null && contactCache.containsKey(contactId.toString())) {
-                String[] contactParts = contactCache.get(contactId.toString()).split(",");
-                contactName = contactParts[0];
-                phoneNumber = contactParts[1];
-            }
-
-            if (eventId != null && eventCache.containsKey(eventId.toString())) {
-                messageText = eventCache.get(eventId.toString());
-            }
-
-            if (contactId == null || phoneNumber == null || messageText == null) {
-                System.err.println("Missing data in notification: contact_id=" + contactId + ", phone_number=" + phoneNumber + ", message=" + messageText);
+            if (contactId == null || contactName == null || phoneNumber == null || messageText == null) {
+                System.err.println("Missing data in notification: contact_id=" + contactId + ", contact_name=" + contactName + ", phone_number=" + phoneNumber + ", message=" + messageText);
                 return;
             }
 
             Notification notification = new Notification();
-            notification.setEventId(eventId);
             notification.setContactId(contactId);
             notification.setContactName(contactName);
             notification.setPhoneNumber(phoneNumber);
