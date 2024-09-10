@@ -1,31 +1,34 @@
 package com.example.event_service.service.impl;
 
-
 import com.example.event_service.entity.Event;
 import com.example.event_service.repository.EventRepository;
 import com.example.event_service.service.EventService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EventServiceImpl implements EventService {
-    private static final String TOPIC = "events-topic";
+    private static final String TOPIC = "notification-topic";
 
     @Autowired
     private EventRepository eventRepository;
 
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Event createEvent(Event event) {
         Event savedEvent = eventRepository.save(event);
-        String message = "Event: " + savedEvent.getEventName() + "| Date: " + savedEvent.getEventDate() + "| Text:  "  + savedEvent.getNotificationText();
-        kafkaTemplate.send(TOPIC, message);
+        sendEventToNotificationTopic(savedEvent);
         return savedEvent;
     }
 
@@ -44,11 +47,21 @@ public class EventServiceImpl implements EventService {
         eventRepository.deleteById(id);
     }
 
-    private void sendEventToKafka(Event event) {
-        String eventJson = String.format(
-                "{\"id\":%d,\"eventName\":\"%s\",\"eventDate\":\"%s\",\"notificationText\":\"%s\"}",
-                event.getId(), event.getEventName(), event.getEventDate(), event.getNotificationText()
-        );
-        kafkaTemplate.send(TOPIC, eventJson);
+    private void sendEventToNotificationTopic(Event event) {
+        try {
+
+            Map<String, Object> eventDetails = new HashMap<>();
+            eventDetails.put("event_id", event.getId());
+            eventDetails.put("event_name", event.getEventName());
+            eventDetails.put("event_date", event.getEventDate());
+            eventDetails.put("notification_text", event.getNotificationText());
+
+            String eventJson = objectMapper.writeValueAsString(eventDetails);
+
+            kafkaTemplate.send(TOPIC, eventJson);
+            System.out.println("Sent event as JSON to notification-topic: " + eventJson);
+        } catch (JsonProcessingException e) {
+            System.err.println("Failed to serialize event: " + e.getMessage());
+        }
     }
 }

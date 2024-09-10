@@ -1,4 +1,5 @@
 package com.example.notification_service.entity;
+
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,23 +14,24 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "event_id", nullable = false)
+    @Column(name = "event_id")
     private Long eventId;
 
-    @Column(name = "contact_id", nullable = false)
+    @Column(name = "contact_id")
     private Long contactId;
-    @Column(name = "contact_name", nullable = false)
+
+    @Column(name = "contact_name")
     private String contactName;
 
-    @Column(name = "phone_number", nullable = false)
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "message", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "message", columnDefinition = "TEXT")
     private String message;
 
-    @Column(name = "status", nullable = false, length = 50)
+    @Column(name = "status", length = 50)
     private String status;
 
-    @Column(name = "sent_at", nullable = false)
+    @Column(name = "sent_at")
     private Timestamp sentAt;
 }

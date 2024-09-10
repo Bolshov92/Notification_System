@@ -12,6 +12,9 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class ContactServiceImpl implements ContactService {
     private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
@@ -28,24 +31,30 @@ public class ContactServiceImpl implements ContactService {
 
     public void sendContact(Contact contact) {
         try {
-            String contactJson = objectMapper.writeValueAsString(contact);
+
+            Map<String, Object> contactDetails = new HashMap<>();
+            contactDetails.put("contact_id", contact.getId());
+            contactDetails.put("contact_name", contact.getName());
+            contactDetails.put("phone_number", contact.getPhoneNumber());
+
+
+            String contactJson = objectMapper.writeValueAsString(contactDetails);
             kafkaTemplate.send(TOPIC, contactJson);
-            logger.info("Sent contact as JSON to notification-topic:  {}", contactJson);
+            logger.info("Sent contact as JSON to notification-topic: {}", contactJson);
         } catch (JsonProcessingException e) {
             logger.error("Failed to convert contact to JSON", e);
         }
     }
 
     @KafkaListener(topics = "contacts-topic", groupId = "contact-group")
-    public void consume(String message) {
+    public void consume(Contact contact) {
         try {
-            Contact contact = objectMapper.readValue(message, Contact.class);
             contactRepository.save(contact);
             logger.info("Saved contact to database: {}", contact);
+
             sendContact(contact);
         } catch (Exception e) {
             logger.error("Failed to process message: " + e.getMessage(), e);
         }
     }
-
 }
