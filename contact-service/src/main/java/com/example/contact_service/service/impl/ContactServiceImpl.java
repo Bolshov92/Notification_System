@@ -49,7 +49,7 @@ public class ContactServiceImpl implements ContactService {
         try {
             Map<String, Object> contactData = objectMapper.readValue(message, Map.class);
 
-            Long fileId = Long.valueOf(contactData.get("fileId").toString());
+            Long fileId = Long.valueOf(contactData.get("file_id").toString());
             String name = contactData.get("name").toString();
             String phoneNumber = contactData.get("phoneNumber").toString();
 
