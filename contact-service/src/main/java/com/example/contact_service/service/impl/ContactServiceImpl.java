@@ -47,12 +47,25 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @KafkaListener(topics = "contacts-topic", groupId = "contact-group")
-    public void consume(Contact contact) {
+    public void consume(String message) {
         try {
+            Map<String, Object> contactData = objectMapper.readValue(message, Map.class);
+
+            Long fileId = Long.valueOf(contactData.get("fileId").toString());
+            String name = contactData.get("name").toString();
+            String phoneNumber = contactData.get("phoneNumber").toString();
+
+            Contact contact = new Contact();
+            contact.setFileId(fileId);
+            contact.setName(name);
+            contact.setPhoneNumber(phoneNumber);
+
             contactRepository.save(contact);
             logger.info("Saved contact to database: {}", contact);
 
             sendContact(contact);
+        } catch (JsonProcessingException e) {
+            logger.error("Failed to parse JSON message: " + e.getMessage(), e);
         } catch (Exception e) {
             logger.error("Failed to process message: " + e.getMessage(), e);
         }

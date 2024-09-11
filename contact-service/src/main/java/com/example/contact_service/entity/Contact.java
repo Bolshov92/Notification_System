@@ -13,6 +13,7 @@ public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long fileId;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
