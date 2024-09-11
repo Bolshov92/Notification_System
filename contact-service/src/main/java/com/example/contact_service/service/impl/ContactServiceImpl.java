@@ -21,7 +21,7 @@ public class ContactServiceImpl implements ContactService {
     private static final String TOPIC = "notification-topic";
 
     @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -31,12 +31,10 @@ public class ContactServiceImpl implements ContactService {
 
     public void sendContact(Contact contact) {
         try {
-
             Map<String, Object> contactDetails = new HashMap<>();
             contactDetails.put("contact_id", contact.getId());
             contactDetails.put("contact_name", contact.getName());
             contactDetails.put("phone_number", contact.getPhoneNumber());
-
 
             String contactJson = objectMapper.writeValueAsString(contactDetails);
             kafkaTemplate.send(TOPIC, contactJson);
