@@ -53,6 +53,7 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
         Long fileId = savedFile.getId();
+        String fileName = savedFile.getFileName();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
@@ -61,7 +62,7 @@ public class FileServiceImpl implements FileService {
                 if (parts.length >= 2) {
                     String name = parts[0].trim();
                     String phoneNumber = parts[1].trim();
-                    fileProducer.sendMessage(fileId ,name, phoneNumber);
+                    fileProducer.sendMessage(fileId, fileName, name, phoneNumber);
                 } else {
                     logger.error("Invalid line format: " + line);
                 }
