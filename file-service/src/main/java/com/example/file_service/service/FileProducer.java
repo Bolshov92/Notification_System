@@ -17,10 +17,11 @@ public class FileProducer {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void sendMessage( Long id ,String name, String phoneNumber) {
+    public void sendMessage( Long id ,String fileName,String name, String phoneNumber) {
         try {
             String jsonMessage = objectMapper.writeValueAsString(Map.of(
                     "file_id", id,
+                    "file_name", fileName,
                     "name", name,
                     "phoneNumber", phoneNumber
             ));
