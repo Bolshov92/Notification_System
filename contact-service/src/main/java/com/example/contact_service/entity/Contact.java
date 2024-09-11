@@ -13,6 +13,7 @@ public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "fileId")
     private Long fileId;
 
     @Column(name = "name", nullable = false, length = 255)
@@ -23,8 +24,8 @@ public class Contact {
 
     public Contact() {
     }
-
-    public Contact(String name, String phoneNumber) {
+    public Contact(Long fileId, String name, String phoneNumber) {
+        this.fileId = fileId;
         this.name = name;
         this.phoneNumber = phoneNumber;
     }
