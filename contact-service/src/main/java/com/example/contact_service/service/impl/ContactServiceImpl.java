@@ -13,6 +13,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -50,10 +51,12 @@ public class ContactServiceImpl implements ContactService {
             Map<String, Object> contactData = objectMapper.readValue(message, Map.class);
 
             Long fileId = Long.valueOf(contactData.get("file_id").toString());
+            String fileName = contactData.get("file_name").toString();
             String name = contactData.get("name").toString();
             String phoneNumber = contactData.get("phoneNumber").toString();
 
             Contact contact = new Contact();
+            contact.setFileName(fileName);
             contact.setFileId(fileId);
             contact.setName(name);
             contact.setPhoneNumber(phoneNumber);
@@ -67,5 +70,9 @@ public class ContactServiceImpl implements ContactService {
         } catch (Exception e) {
             logger.error("Failed to process message: " + e.getMessage(), e);
         }
+    }
+
+    public List<Contact> getContactsByFileName(String fileName) {
+        return contactRepository.findByFileName(fileName);
     }
 }
