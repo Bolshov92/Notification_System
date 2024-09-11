@@ -20,7 +20,7 @@ public class FileProducer {
     public void sendMessage( Long id ,String name, String phoneNumber) {
         try {
             String jsonMessage = objectMapper.writeValueAsString(Map.of(
-                    "fileId", id,
+                    "file_id", id,
                     "name", name,
                     "phoneNumber", phoneNumber
             ));
