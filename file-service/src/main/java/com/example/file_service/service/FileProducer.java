@@ -17,9 +17,13 @@ public class FileProducer {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void sendMessage(String name, String phoneNumber) {
+    public void sendMessage( Long id ,String name, String phoneNumber) {
         try {
-            String jsonMessage = objectMapper.writeValueAsString(Map.of("name", name, "phoneNumber", phoneNumber));
+            String jsonMessage = objectMapper.writeValueAsString(Map.of(
+                    "fileId", id,
+                    "name", name,
+                    "phoneNumber", phoneNumber
+            ));
             kafkaTemplate.send(TOPIC, jsonMessage);
             System.out.println("Message sent to Kafka: " + jsonMessage);
         } catch (Exception e) {
