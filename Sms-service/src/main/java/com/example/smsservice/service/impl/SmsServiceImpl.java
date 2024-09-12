@@ -65,7 +65,7 @@ public class SmsServiceImpl implements SmsService {
             String event = (String) messageMap.get("event");
             String textMessage = (String) messageMap.get("message");
 
-            String fullMessage = "Event: " + event + "\nMessage: " + textMessage;
+            String fullMessage = String.format("Hello %s,\n\nEvent: %s\nMessage: %s", contactName, event, textMessage);
 
             sendSms(phoneNumber, fullMessage);
         } catch (Exception e) {
