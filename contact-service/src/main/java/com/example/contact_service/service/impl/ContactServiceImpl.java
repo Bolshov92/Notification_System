@@ -30,20 +30,20 @@ public class ContactServiceImpl implements ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    public void sendContact(Contact contact) {
-        try {
-            Map<String, Object> contactDetails = new HashMap<>();
-            contactDetails.put("contact_id", contact.getId());
-            contactDetails.put("contact_name", contact.getName());
-            contactDetails.put("phone_number", contact.getPhoneNumber());
-
-            String contactJson = objectMapper.writeValueAsString(contactDetails);
-            kafkaTemplate.send(TOPIC, contactJson);
-            logger.info("Sent contact as JSON to notification-topic: {}", contactJson);
-        } catch (JsonProcessingException e) {
-            logger.error("Failed to convert contact to JSON", e);
-        }
-    }
+//    public void sendContact(Contact contact) {
+//        try {
+//            Map<String, Object> contactDetails = new HashMap<>();
+//            contactDetails.put("contact_id", contact.getId());
+//            contactDetails.put("contact_name", contact.getName());
+//            contactDetails.put("phone_number", contact.getPhoneNumber());
+//
+//            String contactJson = objectMapper.writeValueAsString(contactDetails);
+//            kafkaTemplate.send(TOPIC, contactJson);
+//            logger.info("Sent contact as JSON to notification-topic: {}", contactJson);
+//        } catch (JsonProcessingException e) {
+//            logger.error("Failed to convert contact to JSON", e);
+//        }
+//    }
 
     @KafkaListener(topics = "contacts-topic", groupId = "contact-group")
     public void consume(String message) {
@@ -64,7 +64,7 @@ public class ContactServiceImpl implements ContactService {
             contactRepository.save(contact);
             logger.info("Saved contact to database: {}", contact);
 
-            sendContact(contact);
+//            sendContact(contact);
         } catch (JsonProcessingException e) {
             logger.error("Failed to parse JSON message: " + e.getMessage(), e);
         } catch (Exception e) {
