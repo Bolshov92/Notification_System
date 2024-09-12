@@ -26,8 +26,11 @@ public class Notification {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "message", columnDefinition = "TEXT")
-    private String message;
+    @Column(name = "event_name")
+    private String eventName;
+
+    @Column(name = "event_message")
+    private String eventMessage;
 
     @Column(name = "status", length = 50)
     private String status;

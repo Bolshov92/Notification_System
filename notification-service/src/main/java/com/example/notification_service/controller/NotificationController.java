@@ -8,20 +8,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
+    @Autowired
+    private  NotificationService notificationService;
 
     @Autowired
-    private NotificationService notificationService;
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
-    @PostMapping("/send-sms")
-    public ResponseEntity<String> sendSms(@RequestParam String to, @RequestParam String message) {
-        try {
-            notificationService.sendNotification(to, message);
-            return ResponseEntity.ok("SMS notification sent successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to send SMS notification: " + e.getMessage());
-        }
+    @PostMapping("/create")
+    public String createNotifications(@RequestParam String fileName,
+                                      @RequestParam String eventName,
+                                      @RequestParam Timestamp sendTime) {
+        notificationService.createNotifications(fileName, eventName, sendTime);
+        return "Notification creation initiated!";
     }
 }

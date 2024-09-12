@@ -1,5 +1,10 @@
 package com.example.notification_service.service;
 
+import com.example.notification_service.repository.NotificationRepository;
+import org.springframework.kafka.core.KafkaTemplate;
+
+import java.sql.Timestamp;
+
 public interface NotificationService {
-    void sendNotification(String to, String message);
+    public void createNotifications(String fileName, String eventName, Timestamp sendTime);
 }
