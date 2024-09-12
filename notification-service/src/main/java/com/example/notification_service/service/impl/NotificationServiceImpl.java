@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +138,7 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setSentAt(sendTime);
 
             notificationRepository.save(notification);
+            notifySmsService(contactName, phoneNumber, eventName, eventMessage);
         }
 
         clearTemporaryData();
@@ -158,5 +160,20 @@ public class NotificationServiceImpl implements NotificationService {
         requestedFileName = null;
         requestedEventName = null;
         notificationTime = null;
+    }
+
+    private void notifySmsService(String contactName, String phoneNumber, String eventName, String eventMessage) {
+        Map<String, Object> smsNotification = new HashMap<>();
+        smsNotification.put("contactName", contactName);
+        smsNotification.put("phoneNumber", phoneNumber);
+        smsNotification.put("event", eventName);
+        smsNotification.put("message", eventMessage);
+
+        try {
+            String smsMessage = objectMapper.writeValueAsString(smsNotification);
+            kafkaTemplate.send("sms-notifications-topic", smsMessage);
+        } catch (Exception e) {
+            logger.error("Failed to send SMS notification to Kafka: ", e);
+        }
     }
 }
