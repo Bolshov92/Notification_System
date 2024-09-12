@@ -1,3 +1,3 @@
-INSERT INTO Event (event_name, event_date, notification_text)
-VALUES ('Conference', '2024-09-15', 'Conference will start at 10:00 AM.'),
-       ('Meeting', '2024-10-20', 'Monthly team meeting at 2:00 PM.');
+INSERT INTO event (id,event_name, event_message)
+VALUES (1,'Conference', 'Conference will start at 10:00 AM.'),
+       (2,'Meeting', 'Monthly team meeting at 2:00 PM.');

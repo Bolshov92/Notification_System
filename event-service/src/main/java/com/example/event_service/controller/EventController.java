@@ -12,15 +12,16 @@ import java.util.List;
 @RequestMapping("/api/events")
 public class EventController {
     @Autowired
-    private EventService eventService;
+    private final EventService eventService;
+
+    @Autowired
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @PostMapping
     public Event createEvent(@RequestBody EventDTO eventDTO) {
-        Event event = new Event();
-        event.setEventName(eventDTO.getEventName());
-        event.setEventDate(eventDTO.getEventDate());
-        event.setNotificationText(eventDTO.getNotificationText());
-        return eventService.createEvent(event);
+        return eventService.createEvent(eventDTO);
     }
 
     @GetMapping("/{id}")
