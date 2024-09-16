@@ -20,9 +20,9 @@ public class SmsServiceController {
         this.smsService = smsService;
     }
 
-    @PostMapping("/send")
-    public ResponseEntity<String> sendSms(@RequestBody SmsRequestDto smsRequestDto) {
-        smsService.sendSms(smsRequestDto.getTo(), smsRequestDto.getText());
-        return ResponseEntity.ok("SMS sent successfully");
-    }
+//    @PostMapping("/send")
+//    public ResponseEntity<String> sendSms(@RequestBody SmsRequestDto smsRequestDto) {
+//        smsService.sendSms(smsRequestDto.getTo(), smsRequestDto.getText());
+//        return ResponseEntity.ok("SMS sent successfully");
+//    }
 }

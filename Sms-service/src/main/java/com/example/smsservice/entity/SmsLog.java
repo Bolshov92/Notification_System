@@ -7,11 +7,13 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-@Table(name = "sms_ogs")
+@Table(name = "sms_logs")
 public class SmsLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "notification_id")
+    private Long notificationId;
 
     @Column(name = "to_phone_number", nullable = false, length = 15)
     private String toPhoneNumber;
