@@ -1,6 +1,8 @@
 package com.example.smsservice.service.impl;
 
+import com.example.smsservice.entity.SmsLog;
 import com.example.smsservice.service.SmsService;
+import com.example.smsservice.smsRepository.SmsRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -10,9 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -32,13 +37,20 @@ public class SmsServiceImpl implements SmsService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private SmsRepository smsRepository;
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
     @PostConstruct
     private void init() {
         Twilio.init(accountSid, authToken);
     }
 
     @Override
-    public void sendSms(String to, String text) {
+    public void sendSms(Long notificationId, String to, String text) {
+        String status;
         try {
             Message message = Message.creator(
                     new PhoneNumber(to),
@@ -47,9 +59,36 @@ public class SmsServiceImpl implements SmsService {
             ).create();
 
             logger.info("SMS sent successfully to {}", to);
+            status = "SENT";
         } catch (Exception e) {
             logger.error("Failed to send SMS to {}: {}", to, e.getMessage());
-            throw new RuntimeException("Failed to send SMS", e);
+            status = "FAILED";
+        }
+
+        saveSmsLog(notificationId, to, text, status);
+        sendStatusUpdate(notificationId, status);
+    }
+
+    private void saveSmsLog(Long notificationId, String to, String text, String status) {
+        SmsLog smsLog = new SmsLog();
+        smsLog.setNotificationId(notificationId);
+        smsLog.setToPhoneNumber(to);
+        smsLog.setMessage(text);
+        smsLog.setStatus(status);
+        smsLog.setSentAt(new Timestamp(System.currentTimeMillis()));
+        smsRepository.save(smsLog);
+    }
+
+    private void sendStatusUpdate(Long notificationId, String status) {
+        try {
+            Map<String, Object> statusUpdate = new HashMap<>();
+            statusUpdate.put("notificationId", notificationId);
+            statusUpdate.put("status", status);
+
+            String statusUpdateJson = objectMapper.writeValueAsString(statusUpdate);
+            kafkaTemplate.send("notification-status-topic", statusUpdateJson);
+        } catch (Exception e) {
+            logger.error("Failed to send status update: {}", e.getMessage());
         }
     }
 
@@ -60,16 +99,34 @@ public class SmsServiceImpl implements SmsService {
         try {
             Map<String, Object> messageMap = objectMapper.readValue(message, Map.class);
 
-            String contactName = (String) messageMap.get("contactName");
-            String phoneNumber = (String) messageMap.get("phoneNumber");
-            String event = (String) messageMap.get("event");
-            String textMessage = (String) messageMap.get("message");
+            Long notificationId = getLongValue(messageMap, "notificationId");
+            String contactName = getStringValue(messageMap, "contactName");
+            String phoneNumber = getStringValue(messageMap, "phoneNumber");
+            String event = getStringValue(messageMap, "event");
+            String textMessage = getStringValue(messageMap, "message");
+
+            if (notificationId == null) {
+                logger.error("Notification ID is null. Cannot process message.");
+                return;
+            }
 
             String fullMessage = String.format("Hello %s,\n\nEvent: %s\nMessage: %s", contactName, event, textMessage);
-
-            sendSms(phoneNumber, fullMessage);
+            sendSms(notificationId, phoneNumber, fullMessage);
         } catch (Exception e) {
             logger.error("Failed to process message", e);
         }
+    }
+
+    private Long getLongValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        return null;
+    }
+
+    private String getStringValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value != null ? value.toString() : "";
     }
 }

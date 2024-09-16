@@ -19,7 +19,6 @@ import java.util.Map;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
-
     private static final Logger logger = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     private final KafkaTemplate<String, String> kafkaTemplate;
@@ -137,8 +136,8 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setStatus("PENDING");
             notification.setSentAt(sendTime);
 
-            notificationRepository.save(notification);
-            notifySmsService(contactName, phoneNumber, eventName, eventMessage);
+            Notification savedNotification = notificationRepository.save(notification);
+            notifySmsService(savedNotification.getId(), contactName, phoneNumber, eventName, eventMessage);
         }
 
         clearTemporaryData();
@@ -146,7 +145,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     private Long getLongValue(Map<String, Object> map, String key) {
         Object value = map.get(key);
-        return value != null ? Long.valueOf(value.toString()) : null;
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        return null;
     }
 
     private String getStringValue(Map<String, Object> map, String key) {
@@ -162,8 +164,9 @@ public class NotificationServiceImpl implements NotificationService {
         notificationTime = null;
     }
 
-    private void notifySmsService(String contactName, String phoneNumber, String eventName, String eventMessage) {
+    private void notifySmsService(Long notificationId, String contactName, String phoneNumber, String eventName, String eventMessage) {
         Map<String, Object> smsNotification = new HashMap<>();
+        smsNotification.put("notificationId", notificationId);
         smsNotification.put("contactName", contactName);
         smsNotification.put("phoneNumber", phoneNumber);
         smsNotification.put("event", eventName);
@@ -174,6 +177,35 @@ public class NotificationServiceImpl implements NotificationService {
             kafkaTemplate.send("sms-notifications-topic", smsMessage);
         } catch (Exception e) {
             logger.error("Failed to send SMS notification to Kafka: ", e);
+        }
+    }
+
+    @KafkaListener(topics = "notification-status-topic", groupId = "notification-service-group")
+    public void processStatusUpdate(String message) {
+        logger.info("Received status update: {}", message);
+
+        try {
+            Map<String, Object> statusUpdate = objectMapper.readValue(message, Map.class);
+
+            Long notificationId = getLongValue(statusUpdate, "notificationId");
+            String status = getStringValue(statusUpdate, "status");
+
+            if (notificationId == null) {
+                logger.error("Notification ID is null. Cannot process status update.");
+                return;
+            }
+
+            Notification notification = notificationRepository.findById(notificationId).orElse(null);
+            if (notification != null) {
+                notification.setStatus(status);
+                notificationRepository.save(notification);
+
+                logger.info("Updated notification status for notificationId {}: {}", notificationId, status);
+            } else {
+                logger.warn("Notification not found for notificationId {}", notificationId);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to process status update", e);
         }
     }
 }
