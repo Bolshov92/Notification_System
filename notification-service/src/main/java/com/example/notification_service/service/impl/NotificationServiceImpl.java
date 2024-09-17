@@ -9,13 +9,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -23,6 +24,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final NotificationRepository notificationRepository;
+    private final ThreadPoolTaskScheduler taskScheduler;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private List<String> contactsList = new ArrayList<>();
     private String eventDetails;
@@ -30,13 +34,15 @@ public class NotificationServiceImpl implements NotificationService {
     private String requestedEventName;
     private Timestamp notificationTime;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private boolean notificationsSaved = false;
 
     @Autowired
     public NotificationServiceImpl(KafkaTemplate<String, String> kafkaTemplate,
-                                   NotificationRepository notificationRepository) {
+                                   NotificationRepository notificationRepository,
+                                   ThreadPoolTaskScheduler taskScheduler) {
         this.kafkaTemplate = kafkaTemplate;
         this.notificationRepository = notificationRepository;
+        this.taskScheduler = taskScheduler;
     }
 
     @Override
@@ -47,18 +53,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         requestContacts(fileName);
         requestEvent(eventName);
-
-        new Thread(() -> {
-            try {
-                while (eventDetails == null || contactsList.isEmpty()) {
-                    Thread.sleep(1000);
-                }
-                saveNotifications(fileName, eventName, sendTime, contactsList, eventDetails);
-            } catch (InterruptedException e) {
-                logger.error("Error waiting for data: ", e);
-                Thread.currentThread().interrupt();
-            }
-        }).start();
     }
 
     private void requestContacts(String fileName) {
@@ -75,12 +69,22 @@ public class NotificationServiceImpl implements NotificationService {
     public void processContactResponse(String message) {
         logger.info("Received contact response: {}", message);
         contactsList.add(message);
+        checkAndSaveNotifications();
     }
 
     @KafkaListener(topics = "event-response-topic", groupId = "notification_group")
     public void processEventResponse(String message) {
         logger.info("Received event response: {}", message);
         eventDetails = message;
+        checkAndSaveNotifications();
+    }
+
+    private synchronized void checkAndSaveNotifications() {
+        if (eventDetails != null && !contactsList.isEmpty() && !notificationsSaved) {
+            saveNotifications(requestedFileName, requestedEventName, notificationTime, contactsList, eventDetails);
+            notificationsSaved = true;
+            scheduleNotificationSending();
+        }
     }
 
     private void saveNotifications(String fileName, String eventNameParam, Timestamp sendTime,
@@ -103,8 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
         String eventMessage = getStringValue(eventMap, "eventMessage");
 
         if (eventId == null || eventName.isEmpty() || eventMessage.isEmpty()) {
-            logger.error("Event details are incomplete. Cannot save notifications. Event ID: {}, Event Name: {}, Event Message: {}",
-                    eventId, eventName, eventMessage);
+            logger.error("Event details are incomplete. Cannot save notifications.");
             return;
         }
 
@@ -122,7 +125,7 @@ public class NotificationServiceImpl implements NotificationService {
             String phoneNumber = getStringValue(contactMap, "phoneNumber");
 
             if (contactId == null || contactName.isEmpty() || phoneNumber.isEmpty()) {
-                logger.warn("Contact details are incomplete. Skipping contact. Contact JSON: {}", contactJson);
+                logger.warn("Contact details are incomplete. Skipping contact.");
                 continue;
             }
 
@@ -134,34 +137,36 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setContactName(contactName);
             notification.setPhoneNumber(phoneNumber);
             notification.setStatus("PENDING");
-            notification.setSentAt(sendTime);
+            notification.setNotificationTime(sendTime.toLocalDateTime());
 
-            Notification savedNotification = notificationRepository.save(notification);
-            notifySmsService(savedNotification.getId(), contactName, phoneNumber, eventName, eventMessage);
+            notificationRepository.save(notification);
+        }
+    }
+
+    private void scheduleNotificationSending() {
+        long delay = notificationTime.getTime() - System.currentTimeMillis();
+        logger.info("Scheduling notification sending. Delay: {} ms", delay);
+
+        if (delay > 0) {
+            taskScheduler.schedule(this::sendNotifications, new Date(System.currentTimeMillis() + delay));
+        } else {
+            logger.warn("Scheduled time is in the past. Sending notifications immediately.");
+            sendNotifications();
+        }
+    }
+
+    private void sendNotifications() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Notification> notifications = notificationRepository.findByNotificationTimeBeforeAndStatus(now, "PENDING");
+
+        for (Notification notification : notifications) {
+            notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
+                    notification.getEventName(), notification.getEventMessage());
+            notification.setStatus("SENT");
+            notificationRepository.save(notification);
         }
 
-        clearTemporaryData();
-    }
-
-    private Long getLongValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof Number) {
-            return ((Number) value).longValue();
-        }
-        return null;
-    }
-
-    private String getStringValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        return value != null ? value.toString() : "";
-    }
-
-    private void clearTemporaryData() {
-        contactsList.clear();
-        eventDetails = null;
-        requestedFileName = null;
-        requestedEventName = null;
-        notificationTime = null;
+        logger.info("Notifications sent and statuses updated.");
     }
 
     private void notifySmsService(Long notificationId, String contactName, String phoneNumber, String eventName, String eventMessage) {
@@ -180,32 +185,16 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    @KafkaListener(topics = "notification-status-topic", groupId = "notification-service-group")
-    public void processStatusUpdate(String message) {
-        logger.info("Received status update: {}", message);
-
-        try {
-            Map<String, Object> statusUpdate = objectMapper.readValue(message, Map.class);
-
-            Long notificationId = getLongValue(statusUpdate, "notificationId");
-            String status = getStringValue(statusUpdate, "status");
-
-            if (notificationId == null) {
-                logger.error("Notification ID is null. Cannot process status update.");
-                return;
-            }
-
-            Notification notification = notificationRepository.findById(notificationId).orElse(null);
-            if (notification != null) {
-                notification.setStatus(status);
-                notificationRepository.save(notification);
-
-                logger.info("Updated notification status for notificationId {}: {}", notificationId, status);
-            } else {
-                logger.warn("Notification not found for notificationId {}", notificationId);
-            }
-        } catch (Exception e) {
-            logger.error("Failed to process status update", e);
+    private Long getLongValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
         }
+        return null;
+    }
+
+    private String getStringValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value != null ? value.toString() : "";
     }
 }

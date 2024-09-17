@@ -3,7 +3,7 @@ package com.example.notification_service.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -35,6 +35,6 @@ public class Notification {
     @Column(name = "status", length = 50)
     private String status;
 
-    @Column(name = "sent_at")
-    private Timestamp sentAt;
+    @Column(name = "notification_time")
+    private LocalDateTime notificationTime;
 }

@@ -7,6 +7,7 @@ services:
       MYSQL_DATABASE: contacts_db
       MYSQL_USER: contact_user
       MYSQL_PASSWORD: contact_password
+      TZ: Europe/London
     ports:
       - "3307:3306"
     volumes:
@@ -19,6 +20,7 @@ services:
       MYSQL_DATABASE: events_db
       MYSQL_USER: event_user
       MYSQL_PASSWORD: event_password
+      TZ: Europe/London
     ports:
       - "3308:3306"
     volumes:
@@ -31,6 +33,7 @@ services:
       MYSQL_DATABASE: files_db
       MYSQL_USER: file_user
       MYSQL_PASSWORD: file_password
+      TZ: Europe/London
     ports:
       - "3309:3306"
     volumes:
@@ -43,6 +46,7 @@ services:
       MYSQL_DATABASE: notifications_db
       MYSQL_USER: notification_user
       MYSQL_PASSWORD: notification_password
+      TZ: Europe/London
     ports:
       - "3310:3306"
     volumes:
@@ -55,6 +59,7 @@ services:
       MYSQL_DATABASE: sms_db
       MYSQL_USER: sms_user
       MYSQL_PASSWORD: sms_password
+      TZ: Europe/London
     ports:
       - "3311:3306"
     volumes:
@@ -67,6 +72,7 @@ services:
       MYSQL_DATABASE: users_db
       MYSQL_USER: user_user
       MYSQL_PASSWORD: user_password
+      TZ: Europe/London
     ports:
       - "3312:3306"
     volumes:
@@ -86,6 +92,7 @@ services:
       SPRING_DATASOURCE_USERNAME: contact_user
       SPRING_DATASOURCE_PASSWORD: contact_password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8081:8080"
     depends_on:
@@ -100,6 +107,7 @@ services:
       SPRING_DATASOURCE_USERNAME: event_user
       SPRING_DATASOURCE_PASSWORD: event_password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8082:8080"
     depends_on:
@@ -114,6 +122,7 @@ services:
       SPRING_DATASOURCE_USERNAME: file_user
       SPRING_DATASOURCE_PASSWORD: file_password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8083:8080"
     depends_on:
@@ -128,6 +137,7 @@ services:
       SPRING_DATASOURCE_USERNAME: notification_user
       SPRING_DATASOURCE_PASSWORD: notification_password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8084:8080"
     depends_on:
@@ -145,6 +155,7 @@ services:
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
       TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8085:8080"
     depends_on:
@@ -159,6 +170,7 @@ services:
       SPRING_DATASOURCE_USERNAME: user_user
       SPRING_DATASOURCE_PASSWORD: user_password
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TZ: Europe/London
     ports:
       - "8086:8080"
     depends_on:
@@ -169,6 +181,8 @@ services:
     image: zookeeper:3.6.3
     ports:
       - "2181:2181"
+    environment:
+      TZ: Europe/London
 
   kafka:
     image: wurstmeister/kafka:latest
@@ -178,6 +192,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      TZ: Europe/London
     depends_on:
       - zookeeper
 
