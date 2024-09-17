@@ -15,6 +15,9 @@ public class SmsLog {
     @Column(name = "notification_id")
     private Long notificationId;
 
+    @Column(name = "message_sid", nullable = false, unique = true)
+    private String messageSid;
+
     @Column(name = "to_phone_number", nullable = false, length = 15)
     private String toPhoneNumber;
 
@@ -26,4 +29,5 @@ public class SmsLog {
 
     @Column(name = "sent_at", nullable = false)
     private Timestamp sentAt;
+
 }

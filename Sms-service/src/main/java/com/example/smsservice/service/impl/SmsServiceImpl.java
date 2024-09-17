@@ -16,6 +16,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,28 +51,29 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public void sendSms(Long notificationId, String to, String text) {
-        String status;
+        String messageSid = null;
         try {
             Message message = Message.creator(
-                    new PhoneNumber(to),
-                    new PhoneNumber(fromPhoneNumber),
-                    text
-            ).create();
+                            new PhoneNumber(to),
+                            new PhoneNumber(fromPhoneNumber),
+                            text
+                    )
+                    .setStatusCallback(URI.create("https://43c0-2a00-23c6-2936-f601-40cb-6116-bab5-3ee8.ngrok-free.app/api/sms/status"))
+                    .create();
 
-            logger.info("SMS sent successfully to {}", to);
-            status = "SENT";
+            messageSid = message.getSid();
+            logger.info("SMS sent successfully to {} with MessageSid {}", to, messageSid);
         } catch (Exception e) {
             logger.error("Failed to send SMS to {}: {}", to, e.getMessage());
-            status = "FAILED";
         }
 
-        saveSmsLog(notificationId, to, text, status);
-        sendStatusUpdate(notificationId, status);
+        saveSmsLog(notificationId, messageSid, to, text, "PENDING");
     }
 
-    private void saveSmsLog(Long notificationId, String to, String text, String status) {
+    private void saveSmsLog(Long notificationId, String messageSid, String to, String text, String status) {
         SmsLog smsLog = new SmsLog();
         smsLog.setNotificationId(notificationId);
+        smsLog.setMessageSid(messageSid);
         smsLog.setToPhoneNumber(to);
         smsLog.setMessage(text);
         smsLog.setStatus(status);
@@ -79,16 +81,27 @@ public class SmsServiceImpl implements SmsService {
         smsRepository.save(smsLog);
     }
 
-    private void sendStatusUpdate(Long notificationId, String status) {
+    public void sendStatusUpdate(String messageSid, String messageStatus) {
         try {
             Map<String, Object> statusUpdate = new HashMap<>();
-            statusUpdate.put("notificationId", notificationId);
-            statusUpdate.put("status", status);
+            statusUpdate.put("messageSid", messageSid);
+            statusUpdate.put("status", messageStatus);
 
-            String statusUpdateJson = objectMapper.writeValueAsString(statusUpdate);
-            kafkaTemplate.send("notification-status-topic", statusUpdateJson);
+            SmsLog smsLog = smsRepository.findByMessageSid(messageSid);
+            if (smsLog != null) {
+                smsLog.setStatus(messageStatus);
+                smsRepository.save(smsLog);
+                statusUpdate.put("notificationId", smsLog.getNotificationId());
+
+                String statusUpdateJson = objectMapper.writeValueAsString(statusUpdate);
+                kafkaTemplate.send("notification-status-topic", statusUpdateJson);
+
+                logger.info("Sent status update to Kafka for MessageSid {}: {}", messageSid, statusUpdateJson);
+            } else {
+                logger.error("SmsLog not found for MessageSid {}", messageSid);
+            }
         } catch (Exception e) {
-            logger.error("Failed to send status update: {}", e.getMessage());
+            logger.error("Failed to send status update to Kafka: {}", e.getMessage());
         }
     }
 
