@@ -13,10 +13,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -26,15 +28,13 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final ThreadPoolTaskScheduler taskScheduler;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     private List<String> contactsList = new ArrayList<>();
     private String eventDetails;
     private String requestedFileName;
     private String requestedEventName;
-    private Timestamp notificationTime;
+    private LocalDateTime notificationTime;
 
-    private boolean notificationsSaved = false;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public NotificationServiceImpl(KafkaTemplate<String, String> kafkaTemplate,
@@ -49,10 +49,23 @@ public class NotificationServiceImpl implements NotificationService {
     public void createNotifications(String fileName, String eventName, Timestamp sendTime) {
         this.requestedFileName = fileName;
         this.requestedEventName = eventName;
-        this.notificationTime = sendTime;
+        this.notificationTime = sendTime.toLocalDateTime();
 
         requestContacts(fileName);
         requestEvent(eventName);
+
+        new Thread(() -> {
+            try {
+                while (eventDetails == null || contactsList.isEmpty()) {
+                    Thread.sleep(1000);
+                }
+                saveNotifications(fileName, eventName, sendTime.toLocalDateTime(), contactsList, eventDetails);
+                scheduleNotificationSending();
+            } catch (InterruptedException e) {
+                logger.error("Error waiting for data: ", e);
+                Thread.currentThread().interrupt();
+            }
+        }).start();
     }
 
     private void requestContacts(String fileName) {
@@ -69,25 +82,15 @@ public class NotificationServiceImpl implements NotificationService {
     public void processContactResponse(String message) {
         logger.info("Received contact response: {}", message);
         contactsList.add(message);
-        checkAndSaveNotifications();
     }
 
     @KafkaListener(topics = "event-response-topic", groupId = "notification_group")
     public void processEventResponse(String message) {
         logger.info("Received event response: {}", message);
         eventDetails = message;
-        checkAndSaveNotifications();
     }
 
-    private synchronized void checkAndSaveNotifications() {
-        if (eventDetails != null && !contactsList.isEmpty() && !notificationsSaved) {
-            saveNotifications(requestedFileName, requestedEventName, notificationTime, contactsList, eventDetails);
-            notificationsSaved = true;
-            scheduleNotificationSending();
-        }
-    }
-
-    private void saveNotifications(String fileName, String eventNameParam, Timestamp sendTime,
+    private void saveNotifications(String fileName, String eventNameParam, LocalDateTime sendTime,
                                    List<String> contactsList, String eventDetails) {
         if (eventDetails == null) {
             logger.error("Event details are null. Cannot save notifications.");
@@ -137,14 +140,21 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setContactName(contactName);
             notification.setPhoneNumber(phoneNumber);
             notification.setStatus("PENDING");
-            notification.setNotificationTime(sendTime.toLocalDateTime());
+            notification.setNotificationTime(sendTime);
 
             notificationRepository.save(notification);
         }
+
+        clearTemporaryData();
     }
 
     private void scheduleNotificationSending() {
-        long delay = notificationTime.getTime() - System.currentTimeMillis();
+        if (notificationTime == null) {
+            logger.error("Notification time is null. Cannot schedule sending.");
+            return;
+        }
+
+        long delay = Timestamp.valueOf(notificationTime).getTime() - System.currentTimeMillis();
         logger.info("Scheduling notification sending. Delay: {} ms", delay);
 
         if (delay > 0) {
@@ -156,9 +166,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private void sendNotifications() {
-        LocalDateTime now = LocalDateTime.now();
-        List<Notification> notifications = notificationRepository.findByNotificationTimeBeforeAndStatus(now, "PENDING");
-
+        List<Notification> notifications = notificationRepository.findByNotificationTimeBeforeAndStatus(LocalDateTime.now(), "PENDING");
         for (Notification notification : notifications) {
             notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
                     notification.getEventName(), notification.getEventMessage());
@@ -167,6 +175,26 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         logger.info("Notifications sent and statuses updated.");
+    }
+
+    private Long getLongValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        if (value instanceof Number) {
+            return ((Number) value).longValue();
+        }
+        return null;
+    }
+
+    private String getStringValue(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value != null ? value.toString() : "";
+    }
+
+    private void clearTemporaryData() {
+        contactsList.clear();
+        eventDetails = null;
+        requestedFileName = null;
+        requestedEventName = null;
     }
 
     private void notifySmsService(Long notificationId, String contactName, String phoneNumber, String eventName, String eventMessage) {
@@ -185,16 +213,29 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    private Long getLongValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        if (value instanceof Number) {
-            return ((Number) value).longValue();
-        }
-        return null;
-    }
+    @KafkaListener(topics = "notification-status-topic", groupId = "notification-service-group")
+    public void processStatusUpdate(String message) {
+        logger.info("Received status update: {}", message);
+        try {
+            Map<String, Object> statusUpdate = objectMapper.readValue(message, Map.class);
+            Long notificationId = getLongValue(statusUpdate, "notificationId");
+            String status = getStringValue(statusUpdate, "status");
 
-    private String getStringValue(Map<String, Object> map, String key) {
-        Object value = map.get(key);
-        return value != null ? value.toString() : "";
+            if (notificationId == null) {
+                logger.error("Notification ID is null. Cannot process status update.");
+                return;
+            }
+
+            Notification notification = notificationRepository.findById(notificationId).orElse(null);
+            if (notification != null) {
+                notification.setStatus(status);
+                notificationRepository.save(notification);
+                logger.info("Updated notification status for notificationId {}: {}", notificationId, status);
+            } else {
+                logger.warn("Notification not found for notificationId {}", notificationId);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to process status update", e);
+        }
     }
 }

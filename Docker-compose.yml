@@ -12,6 +12,7 @@ services:
       - "3307:3306"
     volumes:
       - contact-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
 
   event-db:
     image: mysql:8.0.34
@@ -25,6 +26,7 @@ services:
       - "3308:3306"
     volumes:
       - event-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
 
   file-db:
     image: mysql:8.0.34
@@ -38,6 +40,7 @@ services:
       - "3309:3306"
     volumes:
       - file-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
 
   notification-db:
     image: mysql:8.0.34
@@ -51,6 +54,7 @@ services:
       - "3310:3306"
     volumes:
       - notification-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
 
   sms-db:
     image: mysql:8.0.34
@@ -64,6 +68,7 @@ services:
       - "3311:3306"
     volumes:
       - sms-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
 
   user-db:
     image: mysql:8.0.34
@@ -77,6 +82,7 @@ services:
       - "3312:3306"
     volumes:
       - user-db-data:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -195,8 +201,6 @@ services:
       TZ: Europe/London
     depends_on:
       - zookeeper
-
-
 
 volumes:
   contact-db-data:
