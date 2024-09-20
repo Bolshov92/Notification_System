@@ -42,7 +42,7 @@ jobs:
           docker build -t bolshov92/event-service ./event-service
           docker build -t bolshov92/file-service ./file-service
           docker build -t bolshov92/notification-service ./notification-service
-          docker build -t bolshov92/sms-service ./Sms-service
+          docker build -t bolshov92/sms-service ./sms-service
           docker build -t bolshov92/user-service ./user-service
 
       - name: Push Docker images
