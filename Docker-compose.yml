@@ -3,10 +3,10 @@ services:
   contact-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: contacts_db
       MYSQL_USER: contact_user
-      MYSQL_PASSWORD: contact_password
+      MYSQL_PASSWORD: ${CONTACT_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3307:3306"
@@ -17,10 +17,10 @@ services:
   event-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: events_db
       MYSQL_USER: event_user
-      MYSQL_PASSWORD: event_password
+      MYSQL_PASSWORD: ${EVENT_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3308:3306"
@@ -31,10 +31,10 @@ services:
   file-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: files_db
       MYSQL_USER: file_user
-      MYSQL_PASSWORD: file_password
+      MYSQL_PASSWORD: ${FILE_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3309:3306"
@@ -45,10 +45,10 @@ services:
   notification-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: notifications_db
       MYSQL_USER: notification_user
-      MYSQL_PASSWORD: notification_password
+      MYSQL_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3310:3306"
@@ -59,10 +59,10 @@ services:
   sms-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: sms_db
       MYSQL_USER: sms_user
-      MYSQL_PASSWORD: sms_password
+      MYSQL_PASSWORD: ${SMS_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3311:3306"
@@ -73,10 +73,10 @@ services:
   user-db:
     image: mysql:8.0.34
     environment:
-      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: users_db
       MYSQL_USER: user_user
-      MYSQL_PASSWORD: user_password
+      MYSQL_PASSWORD: ${USER_DB_PASSWORD}
       TZ: Europe/London
     ports:
       - "3312:3306"
@@ -96,7 +96,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://contact-db:3306/contacts_db
       SPRING_DATASOURCE_USERNAME: contact_user
-      SPRING_DATASOURCE_PASSWORD: contact_password
+      SPRING_DATASOURCE_PASSWORD: ${CONTACT_DB_PASSWORD}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
@@ -111,7 +111,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://event-db:3306/events_db
       SPRING_DATASOURCE_USERNAME: event_user
-      SPRING_DATASOURCE_PASSWORD: event_password
+      SPRING_DATASOURCE_PASSWORD: ${EVENT_DB_PASSWORD}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
@@ -126,7 +126,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://file-db:3306/files_db
       SPRING_DATASOURCE_USERNAME: file_user
-      SPRING_DATASOURCE_PASSWORD: file_password
+      SPRING_DATASOURCE_PASSWORD: ${FILE_DB_PASSWORD}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
@@ -141,7 +141,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://notification-db:3306/notifications_db
       SPRING_DATASOURCE_USERNAME: notification_user
-      SPRING_DATASOURCE_PASSWORD: notification_password
+      SPRING_DATASOURCE_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
@@ -156,7 +156,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://sms-db:3306/sms_db
       SPRING_DATASOURCE_USERNAME: sms_user
-      SPRING_DATASOURCE_PASSWORD: sms_password
+      SPRING_DATASOURCE_PASSWORD: ${SMS_DB_PASSWORD}
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
       TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
@@ -174,7 +174,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/users_db
       SPRING_DATASOURCE_USERNAME: user_user
-      SPRING_DATASOURCE_PASSWORD: user_password
+      SPRING_DATASOURCE_PASSWORD: ${USER_DB_PASSWORD}
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
