@@ -16,15 +16,12 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17'
-          distribution: 'temurin'  # Добавлено поле distribution
-          java-package: jdk
-          architecture: x64
-          check-latest: false
-          server-id: github
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
-          overwrite-settings: true
+            java-version: '17'
+            distribution: 'temurin'
+            java-package: jdk
+            architecture: x64
+            check-latest: false
+            overwrite-settings: true
 
       - name: Build with Maven
         run: mvn clean package -DskipTests
