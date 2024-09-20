@@ -1,0 +1,47 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # или ваша основная ветка
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:19.03.12
+        options: --privileged
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Build Docker images
+        run: |
+          docker build -t bolshov92/contact-service ./contact-service
+          docker build -t bolshov92/event-service ./event-service
+          docker build -t bolshov92/file-service ./file-service
+          docker build -t bolshov92/notification-service ./notification-service
+          docker build -t bolshov92/sms-service ./sms-service
+          docker build -t bolshov92/user-service ./user-service
+
+      - name: Push Docker images
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push bolshov92/contact-service
+          docker push bolshov92/event-service
+          docker push bolshov92/file-service
+          docker push bolshov92/notification-service
+          docker push bolshov92/sms-service
+          docker push bolshov92/user-service
+
+      - name: Deploy to Railway
+        run: |
+          railway up
