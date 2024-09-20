@@ -15,7 +15,7 @@
     </properties>
 
     <modules>
-        <module>Sms-service</module>
+        <module>sms-service</module>
         <module>contact-service</module>
         <module>file-service</module>
         <module>event-service</module>
