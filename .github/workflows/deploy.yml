@@ -51,6 +51,4 @@ jobs:
           docker push bolshov92/user-service
 
       - name: Deploy with Docker Compose
-        uses: docker/compose-action@v2
-        with:
-          args: up -d     // docker/compose
+        run: docker compose -f docker-compose.yml up -d
