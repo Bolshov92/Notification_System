@@ -53,4 +53,4 @@ jobs:
       - name: Deploy with Docker Compose
         uses: docker/compose-action@v2
         with:
-          args: up -d
+          args: up -d     // docker/compose
