@@ -149,7 +149,7 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       TZ: Europe/London
     ports:
-      - "8084:8080"
+      - "8087:8080"
     depends_on:
       - notification-db
 
