@@ -11,6 +11,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      CONTACT_DB_PASSWORD: ${{ secrets.CONTACT_DB_PASSWORD }}
+      EVENT_DB_PASSWORD: ${{ secrets.EVENT_DB_PASSWORD }}
+      FILE_DB_PASSWORD: ${{ secrets.FILE_DB_PASSWORD }}
+      NOTIFICATION_DB_PASSWORD: ${{ secrets.NOTIFICATION_DB_PASSWORD }}
+      SMS_DB_PASSWORD: ${{ secrets.SMS_DB_PASSWORD }}
+      USER_DB_PASSWORD: ${{ secrets.USER_DB_PASSWORD }}
+      TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+      TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+      TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
 
     steps:
       - name: Checkout code
@@ -52,4 +63,3 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: docker compose -f ./Docker-compose.yml up -d
-
