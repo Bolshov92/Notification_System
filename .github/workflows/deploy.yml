@@ -62,6 +62,10 @@ jobs:
           docker push bolshov92/user-service
 
       - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+
+      - name: Install Railway CLI
         run: npm install -g railway
 
       - name: Login to Railway
