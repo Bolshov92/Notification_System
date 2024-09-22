@@ -52,3 +52,12 @@ jobs:
 
       - name: Deploy with Docker Compose
         run: docker compose -f ./Docker-compose.yml up -d
+
+      - name: Wait for services to be ready
+        run: sleep 30
+
+      - name: Display Docker logs
+        run: docker compose -f ./Docker-compose.yml logs
+
+      - name: Check container status
+        run: docker ps -a
