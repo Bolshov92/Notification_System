@@ -86,14 +86,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @KafkaListener(topics = "event-response-topic", groupId = "notification_group")
     public void processEventResponse(String message) {
-        logger.info("Received event response: {}", message);
+        logger.info("Received event response ->: {}", message);
         eventDetails = message;
     }
 
     private void saveNotifications(String fileName, String eventNameParam, LocalDateTime sendTime,
                                    List<String> contactsList, String eventDetails) {
         if (eventDetails == null) {
-            logger.error("Event details are null. Cannot save notifications.");
+            logger.error("Event details are null. Can't save notifications.");
             return;
         }
 
@@ -110,7 +110,7 @@ public class NotificationServiceImpl implements NotificationService {
         String eventMessage = getStringValue(eventMap, "eventMessage");
 
         if (eventId == null || eventName.isEmpty() || eventMessage.isEmpty()) {
-            logger.error("Event details are incomplete. Cannot save notifications.");
+            logger.error("Event details are incomplete. Can't save notifications.");
             return;
         }
 
