@@ -13,6 +13,11 @@ services:
     volumes:
       - contact-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   event-db:
     image: mysql:8.0.34
@@ -27,6 +32,11 @@ services:
     volumes:
       - event-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   file-db:
     image: mysql:8.0.34
@@ -41,6 +51,11 @@ services:
     volumes:
       - file-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   notification-db:
     image: mysql:8.0.34
@@ -55,6 +70,11 @@ services:
     volumes:
       - notification-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   sms-db:
     image: mysql:8.0.34
@@ -69,6 +89,11 @@ services:
     volumes:
       - sms-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   user-db:
     image: mysql:8.0.34
@@ -84,7 +109,7 @@ services:
       - user-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -103,7 +128,8 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      - contact-db
+      contact-db:
+        condition: service_healthy
 
   event-service:
     build:
@@ -119,7 +145,8 @@ services:
     ports:
       - "8082:8080"
     depends_on:
-      - event-db
+      event-db:
+        condition: service_healthy
 
   file-service:
     build:
@@ -135,7 +162,8 @@ services:
     ports:
       - "8083:8080"
     depends_on:
-      - file-db
+      file-db:
+        condition: service_healthy
 
   notification-service:
     build:
@@ -151,7 +179,8 @@ services:
     ports:
       - "8087:8080"
     depends_on:
-      - notification-db
+      notification-db:
+        condition: service_healthy
 
   sms-service:
     build:
@@ -170,7 +199,8 @@ services:
     ports:
       - "8085:8080"
     depends_on:
-      - sms-db
+      sms-db:
+        condition: service_healthy
 
   user-service:
     build:

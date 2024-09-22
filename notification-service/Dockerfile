@@ -1,5 +1,6 @@
-FROM openjdk:17
+FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY  target/notification-service-0.0.1-SNAPSHOT.jar /app/notification-service.jar
-ENTRYPOINT ["java", "-jar", "notification-service.jar"]
+COPY target/notification-service-0.0.1-SNAPSHOT.jar /app/notification-service.jar
+RUN apt-get update && apt-get install -y default-mysql-client
+ENTRYPOINT ["java", "-jar", "/app/notification-service.jar"]
 EXPOSE 8080
