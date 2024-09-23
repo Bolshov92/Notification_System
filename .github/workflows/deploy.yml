@@ -63,6 +63,9 @@ jobs:
 
 #      - name: Deploy with Docker Compose
 #        run: docker compose -f ./Docker-compose.yml up -d
+      - name: Install Railway CLI
+        run: |
+            curl -sSL https://railway.app/install.sh | sh
 
       - name: Log in to Railway
         run: railway login --token ${{ secrets.RAILWAY_API_TOKEN }}
