@@ -22,7 +22,7 @@ jobs:
       TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
       TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
       TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
-
+      RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_API_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -61,5 +61,11 @@ jobs:
           docker push bolshov92/sms-service
           docker push bolshov92/user-service
 
-      - name: Deploy with Docker Compose
-        run: docker compose -f ./Docker-compose.yml up -d
+#      - name: Deploy with Docker Compose
+#        run: docker compose -f ./Docker-compose.yml up -d
+
+      - name: Log in to Railway
+        run: railway login --token ${{ secrets.RAILWAY_API_TOKEN }}
+
+      - name: Deploy to Railway
+        run: railway up
