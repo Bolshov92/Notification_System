@@ -75,7 +75,9 @@ jobs:
         run: echo "export RAILWAY_TOKEN=${{ secrets.RAILWAY_API_TOKEN }}" >> $GITHUB_ENV
 
       - name: Link Railway project
-        run: echo "RAILWAY_PROJECT_ID=${{ secrets.RAILWAY_PROJECT_ID }}" >> $GITHUB_ENV
+        run: |
+               echo "${{ secrets.RAILWAY_PROJECT_ID }}" > railway_project_id.txt
+               railway link < railway_project_id.txt
 
       - name: Deploy to Railway
         run: railway up
