@@ -76,8 +76,8 @@ jobs:
 
       - name: Link Railway project
         run: |
-               echo "${{ secrets.RAILWAY_PROJECT_ID }}" > railway_project_id.txt
-               railway link < railway_project_id.txt
+                echo "${{ secrets.RAILWAY_PROJECT_ID }}" > railway_project_id.txt
+                railway link --project-id $(cat railway_project_id.txt)
 
       - name: Deploy to Railway
         run: railway up
