@@ -76,7 +76,7 @@ jobs:
 
       - name: Link Railway project
         run: |
-            railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production || echo "Linking failed, attempting to set up manually"
+            railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service hopeful-wisdom || echo "Linking failed, attempting to set up manually"
 
       - name: Deploy to Railway
         run: railway up --environment production
