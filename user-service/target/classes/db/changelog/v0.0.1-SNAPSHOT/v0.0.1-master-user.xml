@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="s">
+        <sqlFile path="create-table-role.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="2" author="s">
+        <sqlFile path="create-table-users.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="3" author="s">
+        <sqlFile path="create-table-userInfo.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="4" author="s">
+        <sqlFile path="insert-data-role.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="5" author="s">
+        <sqlFile path="insert-data-users.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="6" author="s">
+        <sqlFile path="insert-data-userInfo.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,8 @@
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/dto/EventDTO.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/repository/EventRepository.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/config/KafkaProducerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/EventServiceApplication.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/entity/Event.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/service/impl/EventServiceImpl.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/service/EventService.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/event-service/src/main/java/com/example/event_service/controller/EventController.java

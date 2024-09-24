@@ -1,0 +1,44 @@
+
+spring:
+  datasource:
+    url: jdbc:mysql://user-db:3306/users_db?allowMultiQueries=true
+    username: user_user
+    password: user_password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/user_service?allowMultiQueries=true
+#    username: root
+#    password: Bolshov92
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master-user.xml
+
+  profiles:
+    include: kafka
+
+    kafka:
+      topic:
+        name: user-topic
+
+
+  logging:
+    level:
+    root: INFO
+    com.example.construction_company_management: DEBUG
+
+    change-log: classpath:/db/changelog/changelog-master-user.xml
+
+
+  kafka:
+    consumer:
+      group-id: user-service-group
+    topic:
+      name: user-topic

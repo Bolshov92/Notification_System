@@ -1,0 +1,10 @@
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/config/SchedulerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/controller/NotificationController.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/dto/NotificationRequestDto.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/config/KafkaProducerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/service/NotificationService.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/repository/NotificationRepository.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/config/KafkaConsumerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/NotificationServiceApplication.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/entity/Notification.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/notification-service/src/main/java/com/example/notification_service/service/impl/NotificationServiceImpl.java

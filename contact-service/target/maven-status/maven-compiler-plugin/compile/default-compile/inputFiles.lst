@@ -1,0 +1,7 @@
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/config/KafkaConsumerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/repository/ContactRepository.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/ContactServiceApplication.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/service/impl/ContactServiceImpl.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/entity/Contact.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/config/KafkaProducerConfig.java
+/Users/mrbolshov/Home/IT/emergency-notification-system/contact-service/src/main/java/com/example/contact_service/service/ContactService.java
