@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   contact-db:
     image: mysql:8.0.34
@@ -118,7 +119,6 @@ services:
     build:
       context: ./contact-service
       dockerfile: Dockerfile
-    image: bolshov92/contact-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://contact-db:3306/contacts_db
       SPRING_DATASOURCE_USERNAME: contact_user
@@ -135,7 +135,6 @@ services:
     build:
       context: ./event-service
       dockerfile: Dockerfile
-    image: bolshov92/event-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://event-db:3306/events_db
       SPRING_DATASOURCE_USERNAME: event_user
@@ -152,7 +151,6 @@ services:
     build:
       context: ./file-service
       dockerfile: Dockerfile
-    image: bolshov92/file-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://file-db:3306/files_db
       SPRING_DATASOURCE_USERNAME: file_user
@@ -169,7 +167,6 @@ services:
     build:
       context: ./notification-service
       dockerfile: Dockerfile
-    image: bolshov92/notification-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://notification-db:3306/notifications_db
       SPRING_DATASOURCE_USERNAME: notification_user
@@ -186,7 +183,6 @@ services:
     build:
       context: ./sms-service
       dockerfile: Dockerfile
-    image: bolshov92/sms-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://sms-db:3306/sms_db
       SPRING_DATASOURCE_USERNAME: sms_user
@@ -206,7 +202,6 @@ services:
     build:
       context: ./user-service
       dockerfile: Dockerfile
-    image: bolshov92/user-service:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/users_db
       SPRING_DATASOURCE_USERNAME: user_user
