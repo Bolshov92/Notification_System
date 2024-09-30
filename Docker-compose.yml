@@ -116,7 +116,8 @@ services:
       retries: 5
 
   contact-service:
-    image: bolshov92/contact-service
+    build:
+      context: ./contact-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://contact-db:3306/contacts_db
       SPRING_DATASOURCE_USERNAME: contact_user
@@ -130,7 +131,8 @@ services:
         condition: service_healthy
 
   event-service:
-    image: bolshov92/event-service
+    build:
+      context: ./event-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://event-db:3306/events_db
       SPRING_DATASOURCE_USERNAME: event_user
@@ -144,7 +146,8 @@ services:
         condition: service_healthy
 
   file-service:
-    image: bolshov92/file-service
+    build:
+      context: ./file-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://file-db:3306/files_db
       SPRING_DATASOURCE_USERNAME: file_user
@@ -158,7 +161,8 @@ services:
         condition: service_healthy
 
   notification-service:
-    image: bolshov92/notification-service
+    build:
+      context: ./notification-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://notification-db:3306/notifications_db
       SPRING_DATASOURCE_USERNAME: notification_user
@@ -172,7 +176,8 @@ services:
         condition: service_healthy
 
   sms-service:
-    image: bolshov92/sms-service
+    build:
+      context: ./sms-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://sms-db:3306/sms_db
       SPRING_DATASOURCE_USERNAME: sms_user
@@ -189,7 +194,8 @@ services:
         condition: service_healthy
 
   user-service:
-    image: bolshov92/user-service
+    build:
+      context: ./user-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/users_db
       SPRING_DATASOURCE_USERNAME: user_user
