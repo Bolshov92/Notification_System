@@ -1,8 +1,9 @@
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY target/file-service-0.0.1-SNAPSHOT.jar /app/file-service.jar
+VOLUME /tmp
+COPY target/file-service-0.0.1-SNAPSHOT.jar /app/file-service/target/
+WORKDIR /app/file-service
 RUN apt-get update && apt-get install -y default-mysql-client
 RUN ls -l /app
-ENTRYPOINT ["java", "-jar", "file-service.jar"]
+CMD ["java", "-jar", "target/file-service-0.0.1-SNAPSHOT.jar"]
 
 EXPOSE 8080

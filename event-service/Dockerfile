@@ -1,8 +1,10 @@
 FROM openjdk:17-jdk-slim
-WORKDIR /app
-COPY target/event-service-0.0.1-SNAPSHOT.jar /app/event-service.jar
+VOLUME /tmp
+COPY target/event-service-0.0.1-SNAPSHOT.jar /app/event-service/target/
+WORKDIR /app/event-service
 RUN apt-get update && apt-get install -y default-mysql-client
 RUN ls -l /app
-ENTRYPOINT ["java", "-jar", "event-service.jar"]
+CMD ["java", "-jar", "target/event-service-0.0.1-SNAPSHOT.jar"]
+
 
 EXPOSE 8080
