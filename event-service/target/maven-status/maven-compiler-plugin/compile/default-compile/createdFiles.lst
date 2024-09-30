@@ -1,8 +1,0 @@
-com/example/event_service/dto/EventDTO.class
-com/example/event_service/entity/Event.class
-com/example/event_service/controller/EventController.class
-com/example/event_service/service/impl/EventServiceImpl.class
-com/example/event_service/EventServiceApplication.class
-com/example/event_service/service/EventService.class
-com/example/event_service/config/KafkaProducerConfig.class
-com/example/event_service/repository/EventRepository.class

@@ -1,9 +1,0 @@
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/FileServiceApplication.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/service/FileService.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/controller/FileController.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/entity/File.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/service/FileProducer.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/dto/SmsRequest.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/config/KafkaProducerConfig.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/repository/FileRepository.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/file-service/src/main/java/com/example/file_service/service/impl/FileServiceImpl.java

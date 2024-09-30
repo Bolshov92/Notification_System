@@ -1,7 +1,0 @@
-com/example/contact_service/config/KafkaConsumerConfig.class
-com/example/contact_service/config/KafkaProducerConfig.class
-com/example/contact_service/ContactServiceApplication.class
-com/example/contact_service/service/ContactService.class
-com/example/contact_service/repository/ContactRepository.class
-com/example/contact_service/entity/Contact.class
-com/example/contact_service/service/impl/ContactServiceImpl.class

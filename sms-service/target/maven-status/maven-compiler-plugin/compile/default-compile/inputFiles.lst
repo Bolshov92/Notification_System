@@ -1,8 +1,0 @@
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/entity/SmsLog.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/controller/SmsServiceController.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/service/SmsService.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/dto/SmsRequestDto.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/smsRepository/SmsRepository.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/service/impl/SmsServiceImpl.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/config/KafkaConsumerConfig.java
-/Users/mrbolshov/Home/IT/emergency-notification-system/sms-service/src/main/java/com/example/smsservice/SmsServiceApplication.java
