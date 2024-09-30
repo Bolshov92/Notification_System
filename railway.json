@@ -3,7 +3,7 @@
   "environment": "production",
   "build": {
     "docker": {
-      "dockerfile": "./Docker-compose.yml"
+      "compose": true
     }
   }
 }
