@@ -5,8 +5,5 @@
     "docker": {
       "dockerfile": "./Docker-compose.yml"
     }
-  },
-  "run": {
-    "command": "docker compose up --build"
   }
 }
