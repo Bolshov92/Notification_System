@@ -1,4 +1,9 @@
 {
   "id": "5032c1cd-8018-4800-b0bd-43c194a9406f",
-  "environment": "production"
+  "environment": "production",
+  "build": {
+    "docker": {
+      "dockerfile": "./Docker-compose.yml"
+    }
+  }
 }
