@@ -1,4 +1,29 @@
 {
   "id": "5032c1cd-8018-4800-b0bd-43c194a9406f",
-  "environment": "production"
+  "environment": "production",
+  "build": {
+    "docker": {
+      "dockerfile": "./Dockerfile"
+    }
+  },
+  "services": {
+    "contact-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/contact-service.jar"
+    },
+    "event-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/event-service.jar"
+    },
+    "file-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/file-service.jar"
+    },
+    "notification-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/notification-service.jar"
+    },
+    "sms-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/sms-service.jar"
+    },
+    "user-service": {
+      "start": "java -Dserver.port=$PORT -jar /app/user-service.jar"
+    }
+  }
 }
