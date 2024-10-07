@@ -24,6 +24,7 @@ jobs:
       TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID}}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -35,30 +36,31 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+
       - name: Build Contact Service with Maven
-              run: mvn clean package -DskipTests -f ./contact-service/pom.xml
+        run: mvn clean package -DskipTests -f ./contact-service/pom.xml
 
-            - name: Build Event Service with Maven
-              run: mvn clean package -DskipTests -f ./event-service/pom.xml
+      - name: Build Event Service with Maven
+        run: mvn clean package -DskipTests -f ./event-service/pom.xml
 
-            - name: Build File Service with Maven
-              run: mvn clean package -DskipTests -f ./file-service/pom.xml
+      - name: Build File Service with Maven
+        run: mvn clean package -DskipTests -f ./file-service/pom.xml
 
-            - name: Build Notification Service with Maven
-              run: mvn clean package -DskipTests -f ./notification-service/pom.xml
+      - name: Build Notification Service with Maven
+        run: mvn clean package -DskipTests -f ./notification-service/pom.xml
 
-            - name: Build SMS Service with Maven
-              run: mvn clean package -DskipTests -f ./sms-service/pom.xml
+      - name: Build SMS Service with Maven
+        run: mvn clean package -DskipTests -f ./sms-service/pom.xml
 
-            - name: Build User Service with Maven
-              run: mvn clean package -DskipTests -f ./user-service/pom.xml
-
+      - name: Build User Service with Maven
+        run: mvn clean package -DskipTests -f ./user-service/pom.xml
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
 
       - name: Build Docker images
         run: |
@@ -78,8 +80,7 @@ jobs:
           docker push bolshov92/sms-service
           docker push bolshov92/user-service
 
-      #      - name: Deploy with Docker Compose
-      #        run: docker compose -f ./Docker-compose.yml up -d
+
       - name: Install Railway CLI
         run: |
           curl -sSL https://railway.app/install.sh | sh
