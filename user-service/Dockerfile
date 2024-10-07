@@ -1,7 +1,11 @@
-FROM openjdk:17-jdk-slim
-
+FROM maven:3.8.4-openjdk-17 AS builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y default-mysql-client
-COPY ./target/user-service-0.0.1-SNAPSHOT.jar /app/user-service.jar
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=builder /app/target/user-service-0.0.1-SNAPSHOT.jar /app/user-service.jar
 CMD ["java", "-jar", "/app/user-service.jar"]
 EXPOSE 8080
