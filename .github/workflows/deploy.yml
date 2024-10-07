@@ -92,6 +92,21 @@ jobs:
         run: |
             railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service glistening-stillness || echo "Linking failed, attempting to set up manually"
 
+      - name: Deploy Contact Service
+        run: railway up --service contact-service
+
+      - name: Deploy Event Service
+        run: railway up --service event-service
+
+      - name: Deploy File Service
+        run: railway up --service file-service
+
       - name: Deploy Notification Service
-        run: railway up --service Notification_System
+        run: railway up --service notification-service
+
+      - name: Deploy SMS Service
+        run: railway up --service sms-service
+
+      - name: Deploy User Service
+        run: railway up --service user-service
 
