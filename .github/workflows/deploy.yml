@@ -35,8 +35,24 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn clean package -DskipTests
+      - name: Build Contact Service with Maven
+              run: mvn clean package -DskipTests -f ./contact-service/pom.xml
+
+            - name: Build Event Service with Maven
+              run: mvn clean package -DskipTests -f ./event-service/pom.xml
+
+            - name: Build File Service with Maven
+              run: mvn clean package -DskipTests -f ./file-service/pom.xml
+
+            - name: Build Notification Service with Maven
+              run: mvn clean package -DskipTests -f ./notification-service/pom.xml
+
+            - name: Build SMS Service with Maven
+              run: mvn clean package -DskipTests -f ./sms-service/pom.xml
+
+            - name: Build User Service with Maven
+              run: mvn clean package -DskipTests -f ./user-service/pom.xml
+
 
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -73,7 +89,7 @@ jobs:
 
       - name: Link Railway project
         run: |
-            railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service hopeful-wisdom || echo "Linking failed, attempting to set up manually"
+            railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service glistening-stillness || echo "Linking failed, attempting to set up manually"
 
       - name: Deploy to Railway
         run: railway up
