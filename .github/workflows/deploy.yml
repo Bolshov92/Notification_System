@@ -94,3 +94,4 @@ jobs:
 
       - name: Deploy to Railway
         run: railway up
+        //up
