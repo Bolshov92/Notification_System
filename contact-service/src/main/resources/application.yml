@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:mysql://junction.proxy.rlwy.net:18683/contact-service-db?allowMultiQueries=true
     username: root
-    password: gXpWGrUGohrvjYJPKXAPxEySbKacrvgH
+    password: gXpWGrUGohrvjYJPKxAPxEySbKacrvgH
     driver-class-name: com.mysql.cj.jdbc.Driver
   #  datasource:
   #    url: jdbc:mysql://localhost:3306/contact_service?allowMultiQueries=true
