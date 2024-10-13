@@ -22,8 +22,8 @@ jobs:
       TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
       TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
       TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
-      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-      RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID}}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
     steps:
       - name: Checkout code
@@ -35,7 +35,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-
 
       - name: Build Contact Service with Maven
         run: mvn clean package -DskipTests -f ./contact-service/pom.xml
@@ -61,7 +60,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-
       - name: Build Docker images
         run: |
           docker build -t bolshov92/contact-service ./contact-service
@@ -79,34 +77,3 @@ jobs:
           docker push bolshov92/notification-service
           docker push bolshov92/sms-service
           docker push bolshov92/user-service
-
-
-      - name: Install Railway CLI
-        run: |
-          curl -sSL https://railway.app/install.sh | sh
-
-      - name: Set Railway API token
-        run: echo "export RAILWAY_TOKEN=${{ secrets.RAILWAY_TOKEN }}" >> $GITHUB_ENV
-
-      - name: Link Railway project
-        run: |
-            railway link --project-id ${{ secrets.RAILWAY_PROJECT_ID }} --environment production --service glistening-stillness || echo "Linking failed, attempting to set up manually"
-
-      - name: Deploy Contact Service
-        run: railway up --service contact-service
-
-      - name: Deploy Event Service
-        run: railway up --service event-service
-
-      - name: Deploy File Service
-        run: railway up --service file-service
-
-      - name: Deploy Notification Service
-        run: railway up --service notification-service
-
-      - name: Deploy SMS Service
-        run: railway up --service sms-service
-
-      - name: Deploy User Service
-        run: railway up --service user-service
-
