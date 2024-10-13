@@ -227,14 +227,14 @@ services:
     depends_on:
       - zookeeper
 
-volumes:
-  contact-db-data:
-  event-db-data:
-  file-db-data:
-  notification-db-data:
-  sms-db-data:
-  user-db-data:
-
+#volumes:
+#  contact-db-data:
+#  event-db-data:
+#  file-db-data:
+#  notification-db-data:
+#  sms-db-data:
+#  user-db-data:
+#
 #version: '3.8'
 #
 #services:
