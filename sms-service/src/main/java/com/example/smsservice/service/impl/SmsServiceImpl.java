@@ -58,7 +58,7 @@ public class SmsServiceImpl implements SmsService {
                             new PhoneNumber(fromPhoneNumber),
                             text
                     )
-                    .setStatusCallback(URI.create("https://43c0-2a00-23c6-2936-f601-40cb-6116-bab5-3ee8.ngrok-free.app/api/sms/status"))
+                    .setStatusCallback(URI.create("https://a1db1345474c93e63060462c9ea29ddb.serveo.net/api/sms/status"))
                     .create();
 
             messageSid = message.getSid();
