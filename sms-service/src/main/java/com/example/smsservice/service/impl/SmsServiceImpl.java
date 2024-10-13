@@ -58,7 +58,7 @@ public class SmsServiceImpl implements SmsService {
                             new PhoneNumber(fromPhoneNumber),
                             text
                     )
-                    .setStatusCallback(URI.create("https://a1db1345474c93e63060462c9ea29ddb.serveo.net:8085/api/sms/status"))
+                    .setStatusCallback(URI.create("https://dff59b06101d757c8d6def84b33e24ad.serveo.net:8085/api/sms/status"))
                     .create();
 
             messageSid = message.getSid();
