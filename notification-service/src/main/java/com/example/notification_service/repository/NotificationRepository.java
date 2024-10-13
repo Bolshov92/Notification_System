@@ -11,4 +11,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     Notification findByPhoneNumber(String phoneNumber);
 
     List<Notification> findByNotificationTimeBeforeAndStatus(LocalDateTime notificationTime, String status);
+    List<Notification> findByNotificationTimeAfterAndStatus(LocalDateTime notificationTime, String status);
 }
+
