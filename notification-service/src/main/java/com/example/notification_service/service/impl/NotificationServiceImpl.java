@@ -117,6 +117,8 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
+        ZonedDateTime zonedSendTime = sendTime.atZone(ZoneId.of("Europe/London"));
+
         for (String contactJson : contactsList) {
             Map<String, Object> contactMap;
             try {
@@ -135,6 +137,14 @@ public class NotificationServiceImpl implements NotificationService {
                 continue;
             }
 
+            Notification existingNotification = notificationRepository
+                    .findByEventIdAndContactIdAndNotificationTime(eventId, contactId, sendTime);
+
+            if (existingNotification != null) {
+                logger.info("Notification for contact {} already exists. Skipping.", contactName);
+                continue;
+            }
+
             Notification notification = new Notification();
             notification.setEventId(eventId);
             notification.setEventName(eventName);
@@ -143,13 +153,15 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setContactName(contactName);
             notification.setPhoneNumber(phoneNumber);
             notification.setStatus("PENDING");
-            notification.setNotificationTime(sendTime);
+
+            notification.setNotificationTime(zonedSendTime.toLocalDateTime());
 
             notificationRepository.save(notification);
         }
 
         clearTemporaryData();
     }
+
 
 
     private void scheduleNotificationSending() {
