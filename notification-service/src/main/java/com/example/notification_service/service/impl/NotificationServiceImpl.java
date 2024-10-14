@@ -12,9 +12,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -149,13 +151,17 @@ public class NotificationServiceImpl implements NotificationService {
         clearTemporaryData();
     }
 
+
     private void scheduleNotificationSending() {
         if (notificationTime == null) {
             logger.error("Notification time is null. Cannot schedule sending.");
             return;
         }
 
-        long delay = notificationTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+        ZonedDateTime londonTime = notificationTime.atZone(ZoneId.of("Europe/London"));
+
+        long delay = londonTime.toInstant().toEpochMilli() - System.currentTimeMillis();
+
         logger.info("Scheduling notification sending. Delay: {} ms", delay);
 
         if (delay > 0) {
@@ -165,6 +171,7 @@ public class NotificationServiceImpl implements NotificationService {
             sendNotifications();
         }
     }
+
 
     private void sendNotifications() {
         List<Notification> notifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
