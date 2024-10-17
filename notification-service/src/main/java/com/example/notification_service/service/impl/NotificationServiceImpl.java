@@ -137,17 +137,12 @@ public class NotificationServiceImpl implements NotificationService {
                 continue;
             }
 
+
             Notification existingNotification = notificationRepository
-                    .findByEventNameAndPhoneNumberAndContactId(contactName, phoneNumber, contactId);
+                    .findByEventNameAndPhoneNumberAndContactIdAndNotificationTime(eventName, phoneNumber, contactId, zonedSendTime.toLocalDateTime());
 
             if (existingNotification != null) {
-                if (!existingNotification.getNotificationTime().equals(zonedSendTime.toLocalDateTime())) {
-                    existingNotification.setNotificationTime(zonedSendTime.toLocalDateTime());
-                    existingNotification.setStatus("PENDING");
-                    notificationRepository.save(existingNotification);
-                } else {
-                    logger.info("Notification for event '{}' and phone number '{}' already exists with the same send time. Skipping.", eventName, phoneNumber);
-                }
+                logger.info("Notification for event '{}' and phone number '{}' already exists with the same send time. Skipping.", eventName, phoneNumber);
                 continue;
             }
 
@@ -166,6 +161,7 @@ public class NotificationServiceImpl implements NotificationService {
 
         clearTemporaryData();
     }
+
 
 
 

@@ -10,7 +10,6 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     List<Notification> findByNotificationTimeAfterAndStatus(LocalDateTime notificationTime, String status);
-
-    Notification findByEventNameAndPhoneNumberAndContactId(String eventName, String phoneNumber, Long contactId);
+    Notification findByEventNameAndPhoneNumberAndContactIdAndNotificationTime(String eventName, String phoneNumber, Long contactId, LocalDateTime notificationTime);
 }
 
