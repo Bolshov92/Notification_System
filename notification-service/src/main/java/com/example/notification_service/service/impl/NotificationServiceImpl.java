@@ -88,6 +88,7 @@ public class NotificationServiceImpl implements NotificationService {
         contactsList.add(message);
     }
 
+
     @KafkaListener(topics = "event-response-topic", groupId = "notification_group")
     public void processEventResponse(String message) {
         if (!processedMessages.add(message)) {
