@@ -81,7 +81,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    private synchronized void saveNotifications(String fileName, String eventName, LocalDateTime sendTime,
+    private synchronized void saveNotifications(String fileName, String eventNameParam, LocalDateTime sendTime,
                                                 List<String> contactsList, String eventDetails) {
         if (eventDetails == null) {
             logger.error("Event details are null. Can't save notifications.");
