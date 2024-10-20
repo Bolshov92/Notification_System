@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
+
     @Autowired
     private FileService fileService;
 
@@ -22,11 +23,9 @@ public class FileController {
         }
 
         try {
-            fileService.saveFile(file);
-            return ResponseEntity.ok("File uploaded and processed successfully.");
+            return fileService.saveFile(file);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error processing file: " + e.getMessage());
         }
     }
-
 }

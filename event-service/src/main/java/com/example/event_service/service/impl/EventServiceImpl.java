@@ -12,13 +12,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.mysql.cj.conf.PropertyKey.logger;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -36,11 +35,19 @@ public class EventServiceImpl implements EventService {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public Event createEvent(EventDTO eventDTO) {
+    public ResponseEntity<String> createEvent(EventDTO eventDTO) {
+        List<Event> existingEvents = eventRepository.findByEventName(eventDTO.getEventName());
+        if (!existingEvents.isEmpty()) {
+            return ResponseEntity.badRequest().body("Event with the name '" + eventDTO.getEventName() + "' already exists.");
+        }
+
+
         Event event = new Event();
         event.setEventName(eventDTO.getEventName());
         event.setEventMessage(eventDTO.getEventMessage());
-        return eventRepository.save(event);
+        eventRepository.save(event);
+
+        return ResponseEntity.ok("Event with the name '" + eventDTO.getEventName() + "' has been successfully created.");
     }
 
     @Override
@@ -57,6 +64,7 @@ public class EventServiceImpl implements EventService {
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }
+
     @KafkaListener(topics = EVENT_REQUEST_TOPIC, groupId = "event-group")
     public void processEventRequest(String message) {
         try {
@@ -75,10 +83,10 @@ public class EventServiceImpl implements EventService {
                 String responseJson = objectMapper.writeValueAsString(response);
                 kafkaTemplate.send(EVENT_RESPONSE_TOPIC, responseJson);
             } else {
-                logger.warn("Событие не найдено: {}", eventName);
+                logger.warn("Event not found: {}", eventName);
             }
         } catch (JsonProcessingException e) {
-            logger.error("Ошибка обработки запроса события: ", e);
+            logger.error("Error processing event request: ", e);
         }
     }
 }
