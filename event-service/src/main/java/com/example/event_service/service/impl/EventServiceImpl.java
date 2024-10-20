@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.mysql.cj.conf.PropertyKey.logger;
-
 @Service
 public class EventServiceImpl implements EventService {
 
@@ -37,6 +35,12 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Event createEvent(EventDTO eventDTO) {
+        List<Event> existingEvents = eventRepository.findByEventName(eventDTO.getEventName());
+        if (!existingEvents.isEmpty()) {
+            logger.warn("Event already exists: {}", eventDTO.getEventName());
+            return existingEvents.get(0);
+        }
+
         Event event = new Event();
         event.setEventName(eventDTO.getEventName());
         event.setEventMessage(eventDTO.getEventMessage());
@@ -57,6 +61,7 @@ public class EventServiceImpl implements EventService {
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }
+
     @KafkaListener(topics = EVENT_REQUEST_TOPIC, groupId = "event-group")
     public void processEventRequest(String message) {
         try {
@@ -75,7 +80,7 @@ public class EventServiceImpl implements EventService {
                 String responseJson = objectMapper.writeValueAsString(response);
                 kafkaTemplate.send(EVENT_RESPONSE_TOPIC, responseJson);
             } else {
-                logger.warn("Событие не найдено: {}", eventName);
+                logger.warn("EVENT not found: {}", eventName);
             }
         } catch (JsonProcessingException e) {
             logger.error("Ошибка обработки запроса события: ", e);
