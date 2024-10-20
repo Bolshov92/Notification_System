@@ -12,16 +12,12 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -30,6 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final NotificationRepository notificationRepository;
     private final ThreadPoolTaskScheduler taskScheduler;
+    private final Set<String> processedMessages = ConcurrentHashMap.newKeySet();
 
     private List<String> contactsList = new ArrayList<>();
     private String eventDetails;
@@ -83,18 +80,26 @@ public class NotificationServiceImpl implements NotificationService {
 
     @KafkaListener(topics = "contact-response-topic", groupId = "notification_group")
     public void processContactResponse(String message) {
+        if (!processedMessages.add(message)) {
+            logger.info("Duplicate contact response received: {}", message);
+            return;
+        }
         logger.info("Received contact response: {}", message);
         contactsList.add(message);
     }
 
     @KafkaListener(topics = "event-response-topic", groupId = "notification_group")
     public void processEventResponse(String message) {
+        if (!processedMessages.add(message)) {
+            logger.info("Duplicate event response received: {}", message);
+            return;
+        }
         logger.info("Received event response ->: {}", message);
         eventDetails = message;
     }
 
-    private void saveNotifications(String fileName, String eventNameParam, LocalDateTime sendTime,
-                                   List<String> contactsList, String eventDetails) {
+    private synchronized void saveNotifications(String fileName, String eventNameParam, LocalDateTime sendTime,
+                                                List<String> contactsList, String eventDetails) {
         if (eventDetails == null) {
             logger.error("Event details are null. Can't save notifications.");
             return;
@@ -137,7 +142,6 @@ public class NotificationServiceImpl implements NotificationService {
                 continue;
             }
 
-
             Notification existingNotification = notificationRepository
                     .findByEventNameAndPhoneNumberAndContactIdAndNotificationTime(eventName, phoneNumber, contactId, zonedSendTime.toLocalDateTime());
 
@@ -162,10 +166,6 @@ public class NotificationServiceImpl implements NotificationService {
         clearTemporaryData();
     }
 
-
-
-
-
     private void scheduleNotificationSending() {
         if (notificationTime == null) {
             logger.error("Notification time is null. Cannot schedule sending.");
@@ -173,7 +173,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         ZonedDateTime londonTime = notificationTime.atZone(ZoneId.of("Europe/London"));
-
         long delay = londonTime.toInstant().toEpochMilli() - System.currentTimeMillis();
 
         logger.info("Scheduling notification sending. Delay: {} ms", delay);
@@ -185,7 +184,6 @@ public class NotificationServiceImpl implements NotificationService {
             sendNotifications();
         }
     }
-
 
     private void sendNotifications() {
         List<Notification> notifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
