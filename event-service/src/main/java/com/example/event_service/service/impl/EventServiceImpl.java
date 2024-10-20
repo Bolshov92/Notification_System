@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -36,8 +37,9 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public ResponseEntity<String> createEvent(EventDTO eventDTO) {
-        List<Event> existingEvents = eventRepository.findByEventName(eventDTO.getEventName());
-        if (!existingEvents.isEmpty()) {
+        Optional<Event> existingEvent = eventRepository.findByEventName(eventDTO.getEventName());
+
+        if (existingEvent.isPresent()) {
             return ResponseEntity.badRequest().body("Event with the name '" + eventDTO.getEventName() + "' already exists.");
         }
 
@@ -71,9 +73,9 @@ public class EventServiceImpl implements EventService {
             JsonNode requestJson = objectMapper.readTree(message);
             String eventName = requestJson.get("eventName").asText();
 
-            List<Event> events = eventRepository.findByEventName(eventName);
+            Optional<Event> events = eventRepository.findByEventName(eventName);
             if (!events.isEmpty()) {
-                Event event = events.get(0);
+                Event event = events.get();
 
                 Map<String, Object> response = new HashMap<>();
                 response.put("eventId", event.getId());
