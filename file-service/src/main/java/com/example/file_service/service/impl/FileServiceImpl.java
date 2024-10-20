@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -45,16 +44,8 @@ public class FileServiceImpl implements FileService {
             throw new IllegalArgumentException("File is empty.");
         }
 
-        String fileName = file.getOriginalFilename();
-
-        Optional<File> existingFile = fileRepository.findByFileName(fileName);
-        if (existingFile.isPresent()) {
-            logger.warn("File with name '{}' already exists in the database. Skipping file upload.", fileName);
-            return existingFile.get();
-        }
-
         File dbFile = new File();
-        dbFile.setFileName(fileName);
+        dbFile.setFileName(file.getOriginalFilename());
         dbFile.setType(file.getContentType());
         dbFile.setData(file.getBytes());
         dbFile.setFilePath("/some/path");
@@ -62,8 +53,7 @@ public class FileServiceImpl implements FileService {
 
         File savedFile = fileRepository.save(dbFile);
         Long fileId = savedFile.getId();
-
-        logger.info("File '{}' saved successfully with ID {}", fileName, fileId);
+        String fileName = savedFile.getFileName();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String line;
