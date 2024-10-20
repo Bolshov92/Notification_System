@@ -46,8 +46,8 @@ public class FileServiceImpl implements FileService {
         }
 
         String fileName = file.getOriginalFilename();
-        Optional<File> existingFile = fileRepository.findByFileName(fileName);
 
+        Optional<File> existingFile = fileRepository.findByFileName(fileName);
         if (existingFile.isPresent()) {
             logger.warn("File with name '{}' already exists in the database. Skipping file upload.", fileName);
             return existingFile.get();

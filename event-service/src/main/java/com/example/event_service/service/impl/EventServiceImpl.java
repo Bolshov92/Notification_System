@@ -37,14 +37,16 @@ public class EventServiceImpl implements EventService {
     public Event createEvent(EventDTO eventDTO) {
         List<Event> existingEvents = eventRepository.findByEventName(eventDTO.getEventName());
         if (!existingEvents.isEmpty()) {
-            logger.warn("Event already exists: {}", eventDTO.getEventName());
+            logger.warn("Event with the name '{}' already exists. Event creation skipped.", eventDTO.getEventName());
             return existingEvents.get(0);
         }
 
         Event event = new Event();
         event.setEventName(eventDTO.getEventName());
         event.setEventMessage(eventDTO.getEventMessage());
-        return eventRepository.save(event);
+        Event savedEvent = eventRepository.save(event);
+        logger.info("Event with name '{}' created successfully.", savedEvent.getEventName());
+        return savedEvent;
     }
 
     @Override
@@ -80,10 +82,10 @@ public class EventServiceImpl implements EventService {
                 String responseJson = objectMapper.writeValueAsString(response);
                 kafkaTemplate.send(EVENT_RESPONSE_TOPIC, responseJson);
             } else {
-                logger.warn("EVENT not found: {}", eventName);
+                logger.warn("Event not found: {}", eventName);
             }
         } catch (JsonProcessingException e) {
-            logger.error("Ошибка обработки запроса события: ", e);
+            logger.error("Error processing event request: ", e);
         }
     }
 }
