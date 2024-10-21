@@ -22,6 +22,10 @@ kafka:
   topic:
     name: notification-topic
 
+notification:
+  retry:
+    interval: 60000
+
 scheduler:
   pool:
     size: 10
