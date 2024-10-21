@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.context.event.EventListener;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -164,15 +165,44 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     private void sendNotifications() {
-        List<Notification> notifications = notificationRepository.findByNotificationTimeBeforeAndStatus(LocalDateTime.now(), "PENDING");
-        for (Notification notification : notifications) {
+        List<Notification> notificationsToSendNow = notificationRepository.findByNotificationTimeBeforeAndStatus(LocalDateTime.now(), "PENDING");
+        for (Notification notification : notificationsToSendNow) {
             notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
                     notification.getEventName(), notification.getEventMessage());
             notification.setStatus("SENT");
             notificationRepository.save(notification);
         }
 
-        logger.info("Notifications sent and statuses updated.");
+        logger.info("Immediate notifications sent and statuses updated.");
+
+        List<Notification> futureNotifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
+        for (Notification notification : futureNotifications) {
+            scheduleFutureNotification(notification);
+        }
+
+        logger.info("Future notifications scheduled.");
+    }
+
+    private void scheduleFutureNotification(Notification notification) {
+        LocalDateTime notificationTime = notification.getNotificationTime();
+        long delay = Timestamp.valueOf(notificationTime).getTime() - System.currentTimeMillis();
+        logger.info("Scheduling future notification for ID {}. Delay: {} ms", notification.getId(), delay);
+
+        if (delay > 0) {
+            taskScheduler.schedule(() -> {
+                notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
+                        notification.getEventName(), notification.getEventMessage());
+                notification.setStatus("SENT");
+                notificationRepository.save(notification);
+                logger.info("Future notification sent for ID {}", notification.getId());
+            }, new Date(System.currentTimeMillis() + delay));
+        } else {
+            logger.warn("Scheduled time is in the past for ID {}. Sending notification immediately.", notification.getId());
+            notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
+                    notification.getEventName(), notification.getEventMessage());
+            notification.setStatus("SENT");
+            notificationRepository.save(notification);
+        }
     }
 
     private Long getLongValue(Map<String, Object> map, String key) {
@@ -194,6 +224,7 @@ public class NotificationServiceImpl implements NotificationService {
         requestedFileName = null;
         requestedEventName = null;
     }
+
     private void notifySmsService(Long notificationId, String contactName, String phoneNumber, String eventName, String eventMessage) {
         Map<String, Object> smsNotification = new HashMap<>();
         smsNotification.put("notificationId", notificationId);
@@ -260,5 +291,6 @@ public class NotificationServiceImpl implements NotificationService {
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
         retryPendingNotifications();
+        sendNotifications();
     }
 }
