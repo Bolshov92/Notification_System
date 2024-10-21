@@ -50,7 +50,7 @@ services:
       MYSQL_PASSWORD: ${FILE_DB_PASSWORD}
       TZ: Europe/London
     ports:
-      - "3309:3306"
+      - "3309:3306"ыгвщ
     volumes:
       - file-db-data:/var/lib/mysql
       - /etc/localtime:/etc/localtime:ro
