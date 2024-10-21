@@ -8,12 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
-import org.springframework.context.event.EventListener;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -175,6 +174,10 @@ public class NotificationServiceImpl implements NotificationService {
 
         logger.info("Immediate notifications sent and statuses updated.");
 
+        scheduleFutureNotifications();
+    }
+
+    private void scheduleFutureNotifications() {
         List<Notification> futureNotifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
         for (Notification notification : futureNotifications) {
             scheduleFutureNotification(notification);
@@ -260,31 +263,10 @@ public class NotificationServiceImpl implements NotificationService {
                 notificationRepository.save(notification);
                 logger.info("Updated notification status for notificationId {}: {}", notificationId, status);
             } else {
-                logger.warn("Notification not found for notificationId {}", notificationId);
+                logger.error("Notification not found for ID {}", notificationId);
             }
         } catch (Exception e) {
-            logger.error("Failed to process status update", e);
-        }
-    }
-
-    @Scheduled(fixedDelayString = "${notification.retry.interval:60000}")
-    public void retryPendingNotifications() {
-        logger.info("Checking for pending notifications to retry...");
-        List<Notification> pendingNotifications = notificationRepository.findByNotificationTimeBeforeAndStatus(LocalDateTime.now(), "PENDING");
-
-        if (!pendingNotifications.isEmpty()) {
-            logger.info("Found {} pending notifications to retry.", pendingNotifications.size());
-        }
-
-        for (Notification notification : pendingNotifications) {
-            try {
-                notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
-                        notification.getEventName(), notification.getEventMessage());
-                notification.setStatus("SENT");
-                notificationRepository.save(notification);
-            } catch (Exception e) {
-                logger.error("Failed to send notification with ID {}: {}", notification.getId(), e.getMessage());
-            }
+            logger.error("Error processing status update: ", e);
         }
     }
 
@@ -292,5 +274,20 @@ public class NotificationServiceImpl implements NotificationService {
     public void onApplicationReady() {
         retryPendingNotifications();
         sendNotifications();
+        reSchedulePendingNotifications();
+    }
+
+    private void reSchedulePendingNotifications() {
+        List<Notification> futureNotifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
+        for (Notification notification : futureNotifications) {
+            scheduleFutureNotification(notification);
+        }
+    }
+
+    private void retryPendingNotifications() {
+        List<Notification> pendingNotifications = notificationRepository.findByStatus("PENDING");
+        for (Notification notification : pendingNotifications) {
+            scheduleFutureNotification(notification);
+        }
     }
 }
