@@ -165,7 +165,13 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void sendNotifications() {
         List<Notification> notificationsToSendNow = notificationRepository.findByNotificationTimeBeforeAndStatus(LocalDateTime.now(), "PENDING");
+
         for (Notification notification : notificationsToSendNow) {
+            if ("SENT".equals(notification.getStatus())) {
+                logger.info("Notification with ID {} already sent. Skipping.", notification.getId());
+                continue;
+            }
+
             notifySmsService(notification.getId(), notification.getContactName(), notification.getPhoneNumber(),
                     notification.getEventName(), notification.getEventMessage());
             notification.setStatus("SENT");
@@ -188,6 +194,12 @@ public class NotificationServiceImpl implements NotificationService {
 
     private void scheduleFutureNotification(Notification notification) {
         LocalDateTime notificationTime = notification.getNotificationTime();
+
+        if ("SENT".equals(notification.getStatus())) {
+            logger.info("Notification with ID {} already sent. Skipping future scheduling.", notification.getId());
+            return;
+        }
+
         long delay = Timestamp.valueOf(notificationTime).getTime() - System.currentTimeMillis();
         logger.info("Scheduling future notification for ID {}. Delay: {} ms", notification.getId(), delay);
 
@@ -252,21 +264,25 @@ public class NotificationServiceImpl implements NotificationService {
             Long notificationId = getLongValue(statusUpdate, "notificationId");
             String status = getStringValue(statusUpdate, "status");
 
-            if (notificationId == null) {
-                logger.error("Notification ID is null. Cannot process status update.");
-                return;
-            }
-
             Notification notification = notificationRepository.findById(notificationId).orElse(null);
             if (notification != null) {
                 notification.setStatus(status);
                 notificationRepository.save(notification);
-                logger.info("Updated notification status for notificationId {}: {}", notificationId, status);
-            } else {
-                logger.error("Notification not found for ID {}", notificationId);
             }
         } catch (Exception e) {
             logger.error("Error processing status update: ", e);
+        }
+    }
+
+    private void retryPendingNotifications() {
+        List<Notification> pendingNotifications = notificationRepository.findByStatus("PENDING");
+        for (Notification notification : pendingNotifications) {
+            if ("SENT".equals(notification.getStatus())) {
+                logger.info("Notification with ID {} already sent. Skipping retry.", notification.getId());
+                continue;
+            }
+
+            scheduleFutureNotification(notification);
         }
     }
 
@@ -274,20 +290,5 @@ public class NotificationServiceImpl implements NotificationService {
     public void onApplicationReady() {
         retryPendingNotifications();
         sendNotifications();
-        reSchedulePendingNotifications();
-    }
-
-    private void reSchedulePendingNotifications() {
-        List<Notification> futureNotifications = notificationRepository.findByNotificationTimeAfterAndStatus(LocalDateTime.now(), "PENDING");
-        for (Notification notification : futureNotifications) {
-            scheduleFutureNotification(notification);
-        }
-    }
-
-    private void retryPendingNotifications() {
-        List<Notification> pendingNotifications = notificationRepository.findByStatus("PENDING");
-        for (Notification notification : pendingNotifications) {
-            scheduleFutureNotification(notification);
-        }
     }
 }
