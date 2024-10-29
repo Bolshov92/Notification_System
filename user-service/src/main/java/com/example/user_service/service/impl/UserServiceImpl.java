@@ -8,6 +8,7 @@ import com.example.user_service.mapper.UserMapper;
 import com.example.user_service.repository.RoleRepository;
 import com.example.user_service.repository.UserInfoRepository;
 import com.example.user_service.repository.UserRepository;
+import com.example.user_service.service.JwtService;
 import com.example.user_service.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserInfoRepository userInfoRepository;
     private final RoleRepository roleRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final JwtService jwtService;
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -65,4 +67,24 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    @Override
+    public Optional<User> findUserByUsername(String userName) {
+        return userRepository.findByUserInfoUserName(userName);
+    }
+
+    @Override
+    public String authenticateUser(String userName, String password) {
+        Optional<User> userOpt = findUserByUsername(userName);
+
+        if (userOpt.isEmpty() || !passwordEncoder.matches(password, userOpt.get().getUserInfo().getPassword())) {
+            throw new RuntimeException("Invalid username or password");
+        }
+
+        User user = userOpt.get();
+        String role = user.getUserInfo().getRole().getRoleName();
+
+        return jwtService.generateToken(userName, role);
+    }
+
 }
