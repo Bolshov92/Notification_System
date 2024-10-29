@@ -1,4 +1,4 @@
-# Notification Service
+# Notification System
 
 ## Introduction
 
@@ -88,6 +88,22 @@ Content-Type: application/json
     "password": "admin"
 }
 If the credentials are correct, you will receive a JWT token in response.
+This token is required for authorization in subsequent requests. Be sure to include the token in the Authorization header in the format Bearer <JWT_TOKEN>.
+
+Uploading Files and Event Details
+Before scheduling notifications, you'll need to upload a contacts file and create an event. Here’s how to do it:
+
+Upload a Contacts File: Use a request in multipart/form-data format with the key file and select the contacts file you wish to upload.
+
+Create an Event: Send a JSON payload containing the following parameters:
+
+eventName: The name of the event.
+eventMessage: The message to be sent as part of the notification.
+Example request for creating an event:
+{
+    "eventName": "New Event",
+    "eventMessage": "This is a notification message for the event."
+}
 
 ## Scheduling Notifications
 
@@ -103,7 +119,7 @@ Here’s an example of a JSON request to schedule notifications:
 
    json
 {
-    "fileName": "contactS.csv",
+    "fileName": "contact.csv",
     "eventName": "TEST",
     "sendTime": "2024-10-24T06:00:00Z"
 }
